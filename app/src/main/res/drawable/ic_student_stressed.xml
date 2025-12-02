@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Stressed student face icon -->
+    <!-- Head circle -->
+    <path
+        android:fillColor="@color/burntOrange"
+        android:pathData="M60,60m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0"/>
+
+    <!-- Sweat drops -->
+    <path
+        android:fillColor="#4DA8DA"
+        android:pathData="M30,35 Q28,38 30,40 Q32,38 30,35z"/>
+
+    <path
+        android:fillColor="#4DA8DA"
+        android:pathData="M85,45 Q83,48 85,50 Q87,48 85,45z"/>
+
+    <!-- Stressed eyes (X X) -->
+    <path
+        android:strokeColor="@color/textPrimary"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M35,50 L45,60 M45,50 L35,60"/>
+
+    <path
+        android:strokeColor="@color/textPrimary"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M75,50 L85,60 M85,50 L75,60"/>
+
+    <!-- Worried mouth -->
+    <path
+        android:strokeColor="@color/textPrimary"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M40,80 Q60,70 80,80"/>
+
+    <!-- Hair strands (stressed look) -->
+    <path
+        android:strokeColor="@color/textPrimary"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M45,15 L42,8 M55,12 L55,5 M65,12 L68,5"/>
+
+</vector>
+

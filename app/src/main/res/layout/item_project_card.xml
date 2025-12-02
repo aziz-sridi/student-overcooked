@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/cardBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Project Icon/Type Badge -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/projectTypeBadge"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/mustardYellow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/projectTypeIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_project_individual"
+                android:contentDescription="@string/project_type_individual"
+                app:tint="@color/burntOrange"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Project Title -->
+        <TextView
+            android:id="@+id/projectTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/project_title_placeholder"
+            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="@id/projectTypeBadge"
+            app:layout_constraintStart_toEndOf="@id/projectTypeBadge"
+            app:layout_constraintEnd_toStartOf="@id/projectMenu"
+            app:layout_constraintBottom_toBottomOf="@id/projectTypeBadge"/>
+
+        <!-- Menu Button -->
+        <ImageView
+            android:id="@+id/projectMenu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="@string/project_menu_desc"
+            app:tint="@color/textSecondary"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toTopOf="@id/projectTypeBadge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/projectTypeBadge"/>
+
+        <!-- Project Type Label -->
+        <TextView
+            android:id="@+id/projectTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/project_type_individual"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:background="@drawable/bg_chip"
+            app:layout_constraintTop_toBottomOf="@id/projectTypeBadge"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <!-- Tasks Progress -->
+        <TextView
+            android:id="@+id/projectTasksLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/tasks_label"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/projectTypeLabel"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <!-- Tasks Count -->
+        <TextView
+            android:id="@+id/projectTasksCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tasks_count_placeholder"
+            android:textColor="@color/textPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@id/projectTasksLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/projectTasksLabel"/>
+
+        <!-- Progress Bar -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/projectProgress"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:progress="66"
+            app:indicatorColor="@color/successGreen"
+            app:trackColor="@color/progressTrack"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp"
+            app:layout_constraintTop_toBottomOf="@id/projectTasksLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Team Avatars (for team projects) -->
+        <LinearLayout
+            android:id="@+id/teamAvatarsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/projectProgress"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Placeholder for team member avatars - will be added dynamically -->
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_avatar_placeholder"
+                android:contentDescription="Team member"
+                android:background="@drawable/bg_avatar"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

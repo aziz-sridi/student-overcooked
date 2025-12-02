@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme -->
+    <style name="Theme.Overcooked" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/burntOrange</item>
+        <item name="colorPrimaryVariant">@color/cookedGradientEnd</item>
+        <item name="colorOnPrimary">@color/white</item>
+        
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/mustardYellow</item>
+        <item name="colorSecondaryVariant">@color/mustardYellow</item>
+        <item name="colorOnSecondary">@color/textPrimary</item>
+        
+        <!-- Background color -->
+        <item name="android:colorBackground">@color/cream</item>
+        <item name="colorSurface">@color/cardBackground</item>
+        <item name="colorOnSurface">@color/textPrimary</item>
+        
+        <!-- Error color -->
+        <item name="colorError">@color/tomatoRed</item>
+        <item name="colorOnError">@color/white</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/cream</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Theme for splash screen -->
+    <style name="Theme.Overcooked.Splash" parent="Theme.Overcooked">
+        <item name="android:windowBackground">@color/cream</item>
+    </style>
+
+</resources>

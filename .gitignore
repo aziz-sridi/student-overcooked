@@ -1,0 +1,23 @@
+*.iml
+.idea/
+.gradle/
+
+# User specific / local config
+local.properties
+*.keystore
+*.jks
+*.pem
+
+# Build outputs
+**/build/
+**/captures/
+.externalNativeBuild/
+.cxx/
+
+# Firebase / Google services configs
+app/google-services.json
+app/src/main/res/values/google-services.xml
+
+# OS junk
+.DS_Store
+Thumbs.db

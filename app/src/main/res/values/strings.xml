@@ -1,0 +1,331 @@
+<resources>
+    <string name="app_name">Student Overcooked</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="tagline">Let\'s survive another assignment…</string>
+    <string name="signup_title">Create Your Account</string>
+    <string name="fullname_label">Full Name</string>
+    <string name="fullname_hint">Enter your full name</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="signup_button">Sign Up</string>
+    <string name="already_have_account">Already have an account? Log in</string>
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="confirm_password_hint">Re-enter your password</string>
+    <!-- Home Activity Strings -->
+    <string name="cooked_meter_desc">Cooked meter showing stress level</string>
+    <string name="cooked_placeholder">You\'re 65% cooked 🔥</string>
+    <string name="stress_level_indicator">Stress level indicator</string>
+
+    <!-- Section Titles -->
+    <string name="quick_stats_title">Quick Stats</string>
+    <string name="tasks_overview">Tasks Overview</string>
+    <string name="projects_overview">Projects Overview</string>
+    <string name="active_projects">Active Projects</string>
+
+    <!-- Stats -->
+    <string name="stats_placeholder">Loading...</string>
+    <string name="tasks_completed">%1$d/%2$d Tasks</string>
+    <string name="projects_active">%1$d Active</string>
+    <string name="urgent_items">%1$d Urgent</string>
+
+    <!-- Cooked Level Status Messages -->
+    <string name="cooked_level_raw">Fresh Start 😌</string>
+    <string name="cooked_level_light">Light Roast ☕</string>
+    <string name="cooked_level_medium">Medium Roast ☕</string>
+    <string name="cooked_level_well">Well Done 🔥</string>
+    <string name="cooked_level_burnt">Burnt to a Crisp 💀</string>
+
+    <!-- Motivational Messages -->
+    <string name="motivation_placeholder">Keep going — you\'re not fully cooked yet 😅</string>
+    <string name="motivation_low">You\'re crushing it! Keep the momentum going! 💪</string>
+    <string name="motivation_medium">Coffee doesn\'t ask silly questions. Coffee understands. ☕</string>
+    <string name="motivation_high">Breathe. You\'ve survived worse deadlines... probably. 😰</string>
+    <string name="motivation_critical">SOS! Time to call in the study group! 🆘</string>
+
+    <!-- Quick Actions -->
+    <string name="quick_actions_desc">Quick actions</string>
+    <string name="add_task_desc">Add task</string>
+    <string name="back_button_desc">Go back</string>
+    <string name="add_project_desc">Add project</string>
+
+    <!-- Project Card -->
+    <string name="project_tasks_progress">%1$d/%2$d tasks</string>
+    <string name="project_type_individual">Individual</string>
+    <string name="project_type_team">Team</string>
+    <string name="project_menu_desc">Project menu</string>
+    <string name="team_member_desc">Team member</string>
+    <string name="tasks_label">Tasks</string>
+    <string name="percentage_placeholder">65%</string>
+    <string name="tasks_count_placeholder">8/12</string>
+    <string name="tasks_stat_placeholder">12/20</string>
+    <string name="project_title_placeholder">Final Year Project</string>
+
+    <!-- Add Task Activity -->
+    <string name="add_task_title">Add Task</string>
+    <string name="edit_task_title">Edit Task</string>
+    <string name="task_type_label">Task Type</string>
+    <string name="task_type_homework">Homework</string>
+    <string name="task_type_assignment">Assignment</string>
+    <string name="task_type_exam">Exam</string>
+    <string name="task_type_other">Other</string>
+    <string name="task_title_hint">Task Title</string>
+    <string name="task_title_required">Task title is required</string>
+    <string name="task_description_hint">Description (optional)</string>
+    <string name="task_course_hint">Course/Subject</string>
+    <string name="deadline_label">Deadline</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="select_date_desc">Select date</string>
+    <string name="select_time_desc">Select time</string>
+    <string name="priority_label">Priority</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_high">High</string>
+    <string name="link_to_project">Link to Project (Optional)</string>
+    <string name="link_to_project_desc">Link task to a project</string>
+    <string name="arrow_desc">Arrow</string>
+    <string name="save_task_button">Save Task</string>
+
+    <!-- Add Project Activity -->
+    <string name="add_project_title">New Project</string>
+    <string name="project_name_hint">Project Name</string>
+    <string name="project_description_hint">Project Description</string>
+    <string name="project_type_label">Project Type</string>
+    <string name="team_members_label">Team Members</string>
+    <string name="add_team_member">+ Add Team Member</string>
+    <string name="project_course_hint">Course/Subject</string>
+    <string name="project_deadline_label">Project Deadline</string>
+    <string name="select_deadline">Select Deadline</string>
+    <string name="project_color_label">Project Color</string>
+    <string name="create_project_button">Create Project</string>
+    <string name="create_project_title">Create Project</string>
+    <string name="create_project_subtitle">Set up details for this sprint</string>
+    <string name="project_deadline_placeholder">No deadline selected yet</string>
+    <string name="project_deadline_required">Please choose a deadline</string>
+    <string name="project_name_helper">Keep it short and memorable for everyone in the workspace.</string>
+    <string name="subject_helper">We use this to group similar assignments and insights.</string>
+    <string name="project_type_helper">Individual projects hide chat and members automatically; teams keep everything visible.</string>
+    <string name="deadline_field_hint">Tap to pick a deadline</string>
+    <string name="workspace_toggle_label">Create workspace tab</string>
+    <string name="workspace_toggle_helper">Store files, links, and notes inside this project automatically.</string>
+    <string name="creation_progress_label">Creating project…</string>
+    <string name="group_task_mark_complete">Mark as complete</string>
+    <string name="group_task_mark_incomplete">Mark as incomplete</string>
+    <string name="group_task_meta_template">Created %1$s</string>
+    <string name="group_task_no_description">No extra details provided.</string>
+    <string name="group_task_created">Assignment added</string>
+    <string name="group_task_updated">Assignment updated</string>
+    <string name="workspace_tab_title">Workspace</string>
+    <string name="settings_tab_title">Settings</string>
+    <string name="workspace_empty_title">Workspace is empty</string>
+    <string name="workspace_empty_subtitle">Save links, files, and notes that matter for this project.</string>
+    <string name="add_workspace_item">Add Workspace Item</string>
+    <string name="add_workspace_item_title">Add workspace resource</string>
+    <string name="resource_title_hint">Give it a label</string>
+    <string name="resource_type_hint">Select type</string>
+    <string name="resource_note_hint">Drop a quick note</string>
+    <string name="resource_link_hint">Paste a link</string>
+    <string name="resource_file_note_hint">Add an optional note for this file</string>
+    <string name="resource_note_required">Add a short note</string>
+    <string name="resource_link_required">Paste a valid link</string>
+    <string name="resource_type_note">Note</string>
+    <string name="resource_type_link">Link</string>
+    <string name="resource_type_file">File</string>
+    <string name="select_file">Select file</string>
+    <string name="clear_file">Remove file</string>
+    <string name="workspace_file_not_selected">No file selected yet</string>
+    <string name="workspace_file_selected_template">%1$s - %2$s</string>
+    <string name="workspace_file_required">Attach a file before saving</string>
+    <string name="resource_icon_desc">Workspace resource icon</string>
+    <string name="delete_resource_desc">Delete resource</string>
+    <string name="resource_delete_confirm">Remove this workspace item?</string>
+    <string name="workspace_item_deleted">Workspace item deleted</string>
+    <string name="workspace_item_saved">Workspace item saved</string>
+    <string name="untitled_resource">Untitled</string>
+    <string name="uploading_file">Uploading...</string>
+
+    <!-- Project Details Activity -->
+    <string name="progress_label">Progress</string>
+    <string name="deadline_icon_desc">Deadline icon</string>
+    <string name="add_task">+ Add Task</string>
+    <string name="project_options_desc">Project options</string>
+
+    <!-- Tasks List Activity -->
+    <string name="my_tasks_title">My Tasks</string>
+    <string name="filter_all">All</string>
+    <string name="filter_today">Today</string>
+    <string name="filter_upcoming">Upcoming</string>
+    <string name="filter_overdue">Overdue</string>
+    <string name="filter_completed">Completed</string>
+    <string name="no_tasks_yet">No tasks yet!</string>
+    <string name="add_first_task">Tap the + button to add your first task</string>
+    <string name="empty_tasks_desc">Empty tasks illustration</string>
+
+    <!-- Project / Home additions -->
+    <string name="no_projects_yet">No projects yet!</string>
+    <string name="add_first_project">Tap the + button to create your first project</string>
+    <string name="quick_add_task">Quick add task</string>
+    <string name="quick_add_project">Quick add project</string>
+    <string name="stressed_tooltip">This meter shows how "cooked" you are based on pending work.</string>
+    <string name="active_assignments">Active Assignments</string>
+    <string name="active_reports">Active Reports</string>
+    <string name="add_assignment_desc">Add assignment</string>
+    <string name="add_report_desc">Add report</string>
+
+    <!-- Task Item -->
+    <string name="mark_complete_desc">Mark as complete</string>
+    <string name="task_menu_desc">Task menu</string>
+
+    <!-- Team Member Item -->
+    <string name="member_avatar_desc">Member avatar</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_tasks">Assignments</string>
+    <string name="nav_groups">Projects</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Home Fragment -->
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="work_now_title">Work on Now</string>
+    <string name="view_all">View All</string>
+    <string name="no_urgent_tasks">All caught up! 🎉</string>
+    <string name="no_urgent_tasks_subtitle">No urgent assignments right now</string>
+
+    <!-- Cooked Level Stages -->
+    <string name="cooked_level_cozy">You\'re Cozy 😌</string>
+    <string name="cooked_level_crispy">You\'re Crispy 🍳</string>
+    <string name="cooked_level_cooked">You\'re Cooked 🔥</string>
+    <string name="cooked_level_overcooked">You\'re Overcooked 💀</string>
+    <string name="cooked_context_cozy">Relax, you\'re doing great!</string>
+    <string name="cooked_context_crispy">Things are heating up!</string>
+    <string name="cooked_context_cooked">Time to focus!</string>
+    <string name="cooked_context_overcooked">Emergency mode activated!</string>
+
+    <!-- Profile & Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="account_title">Account</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="notifications">Notifications</string>
+    <string name="google_classroom">Google Classroom</string>
+    <string name="log_out">Log Out</string>
+    <string name="about">About</string>
+    <string name="version_info">Version 1.0.0</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="student">Student</string>
+
+    <!-- Groups -->
+    <string name="create_group">Create Project</string>
+    <string name="join_group">Join Project</string>
+    <string name="group_name_hint">Project Name</string>
+    <string name="subject_hint">Subject / Course</string>
+    <string name="description_hint">Description (optional)</string>
+    <string name="join_code_hint">Enter Project Code</string>
+    <string name="tab_tasks">Assignments</string>
+    <string name="tab_chat">Chat</string>
+    <string name="tab_members">Members</string>
+    <string name="tab_workspace">Workspace</string>
+    <string name="tab_settings">Settings</string>
+    <string name="message_hint">Type a message…</string>
+    <string name="send_message">Send</string>
+    <string name="no_groups_yet">No projects yet!</string>
+    <string name="create_or_join_group">Create a new project or join an existing one</string>
+    <string name="project_settings_title">Project Settings</string>
+    <string name="project_settings_description">Update details or clean up this project.</string>
+    <string name="edit_project_button">Edit Project</string>
+    <string name="delete_project_button">Delete Project</string>
+    <string name="confirm_delete_project_title">Delete project?</string>
+    <string name="confirm_delete_project_message">This removes the project, its tasks, and workspace items for everyone.</string>
+    <string name="project_deleted">Project deleted</string>
+    <string name="project_updated">Project updated</string>
+    <string name="resource_open_error">Could not open this item</string>
+    <string name="resource_copy">Copied to clipboard</string>
+    <string name="resource_options">Resource options</string>
+    <string name="view_details">View details</string>
+    <string name="group_code_label">Project Code</string>
+    <string name="copy_code">Copy Code</string>
+    <string name="add_task_button">Add Assignment</string>
+    <string name="task_title_label">Assignment Title</string>
+    <string name="task_due_date_label">Due Date</string>
+    <string name="task_assignee_label">Assign to</string>
+    <string name="task_assignee_unassigned">Unassigned</string>
+    <string name="task_assigned_to_template">Assigned to %1$s</string>
+    <string name="no_group_tasks">No assignments yet</string>
+    <string name="no_chat_messages">No messages yet. Say hi! 👋</string>
+    <string name="member_role_admin">Admin</string>
+    <string name="member_role_member">Member</string>
+    <string name="members_count">%1$d members</string>
+    <string name="group_created_success">Project created successfully!</string>
+    <string name="group_joined_success">Joined project successfully!</string>
+    <string name="invalid_join_code">Invalid project code</string>
+    <string name="group_subject_placeholder">No subject yet</string>
+    <string name="group_no_tasks_short">No tasks yet</string>
+    <string name="group_progress_empty_hint">Create the first task to kick things off</string>
+    <string name="group_progress_percent_template">%1$d%% done</string>
+    <plurals name="group_member_count">
+        <item quantity="one">%1$d member</item>
+        <item quantity="other">%1$d members</item>
+    </plurals>
+
+    <!-- Task List Item -->
+    <string name="due_today">Due Today</string>
+    <string name="due_tomorrow">Due Tomorrow</string>
+    <string name="due_in_days">Due in %1$d days</string>
+    <string name="overdue">Overdue</string>
+
+    <!-- Misc -->
+    <string name="loading">Loading...</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="try_again">Try Again</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+    <string name="copy">Copy</string>
+    <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+
+    <!-- Additional missing strings -->
+    <string name="create_group_info">Share the project code with others to invite them</string>
+    <string name="join_group_title">Join a Project</string>
+    <string name="join_group_subtitle">Enter the 6-character project code to join</string>
+    <string name="add_group_desc">Add new project</string>
+    <string name="dialog_add_group_task_title">Add project assignment</string>
+    <string name="dialog_edit_group_task_title">Edit project assignment</string>
+    <string name="greeting_text">Welcome back!</string>
+    <string name="cooked_status_cozy">You\'re Cozy 😌</string>
+    <string name="all_caught_up">All caught up!</string>
+    <string name="cooked_meter_detail">View Cooked Meter Details</string>
+    <string name="not_connected">Not Connected</string>
+
+    <!-- Task Details Dialog -->
+    <string name="task_details_title">Task Details</string>
+    <string name="close_button_desc">Close</string>
+    <string name="description_label">Description</string>
+    <string name="course_label">Course</string>
+    <string name="notes_label">Notes</string>
+    <string name="status_label">Status</string>
+    <string name="status_not_started">Not Started</string>
+    <string name="status_in_progress">In Progress</string>
+    <string name="status_done">Done</string>
+    <string name="status_overdue">Overdue</string>
+    <string name="action_view_details">View details</string>
+    <string name="delete_button">Delete</string>
+    <string name="save_changes">Save</string>
+    <string name="task_deleted">Task deleted</string>
+    <string name="task_updated">Task updated</string>
+    <string name="task_saved">Task saved</string>
+
+    <!-- Task Menu Options -->
+    <string name="edit_task">Edit</string>
+    <string name="delete_task">Delete</string>
+    <string name="delete_task_title">Delete Task</string>
+    <string name="delete_task_message">Are you sure you want to delete this task? This action cannot be undone.</string>
+    <string name="delete_task_confirm">Are you sure you want to delete "%1$s"? This action cannot be undone.</string>
+
+</resources>

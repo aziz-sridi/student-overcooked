@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Legacy Android colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Overcooked Color Palette -->
+    <!-- Primary / Action -->
+    <color name="burntOrange">#FF6B35</color>
+    <color name="primaryAction">#FF6B35</color>
+
+    <!-- Secondary / Accent -->
+    <color name="mustardYellow">#FFD93D</color>
+    <color name="secondaryAccent">#FFD93D</color>
+
+    <!-- Background / Light -->
+    <color name="cream">#FFF5E1</color>
+    <color name="backgroundLight">#FFF5E1</color>
+
+    <!-- Text Colors -->
+    <color name="textPrimary">#2D2D2D</color>
+    <color name="textSecondary">#555555</color>
+
+    <!-- Error / Alerts -->
+    <color name="tomatoRed">#FF3B30</color>
+    <color name="errorAlert">#FF3B30</color>
+
+    <!-- Success / Completed -->
+    <color name="successGreen">#4CAF50</color>
+
+    <!-- Cooked Meter Gradient -->
+    <color name="cookedGradientStart">#FFA500</color>
+    <color name="cookedGradientEnd">#FF3B30</color>
+
+    <!-- Additional UI Colors -->
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="progressTrack">#FFE5CC</color>
+    <color name="primaryBlue">#2196F3</color>
+    <color name="cardStroke">#FFEFE1</color>
+
+    <!-- Task Status Colors -->
+    <color name="statusNotStarted">#9E9E9E</color>
+    <color name="statusInProgress">#2196F3</color>
+    <color name="statusDone">#4CAF50</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="midnightBlue">#0D1B2A</color>
+
+</resources>
