@@ -8,9 +8,11 @@ import com.example.overcooked.data.model.GroupMember;
 import com.example.overcooked.data.model.GroupMessage;
 import com.example.overcooked.data.model.GroupTask;
 import com.example.overcooked.data.model.Priority;
+import com.example.overcooked.data.model.ProjectInvitation;
 import com.example.overcooked.data.model.ProjectResource;
 import com.example.overcooked.data.model.ProjectResourceType;
 import com.example.overcooked.data.repository.group.GroupInfoDataSource;
+import com.example.overcooked.data.repository.group.GroupInvitationDataSource;
 import com.example.overcooked.data.repository.group.GroupMemberDataSource;
 import com.example.overcooked.data.repository.group.GroupMessageDataSource;
 import com.example.overcooked.data.repository.group.GroupResourceDataSource;
@@ -43,12 +45,14 @@ public class GroupRepository {
     private final com.google.firebase.firestore.CollectionReference messagesCollection;
     private final com.google.firebase.firestore.CollectionReference usersCollection;
     private final com.google.firebase.firestore.CollectionReference resourcesCollection;
+    private final com.google.firebase.firestore.CollectionReference invitationsCollection;
 
     private final GroupInfoDataSource groupInfoDataSource;
     private final GroupTasksDataSource groupTasksDataSource;
     private final GroupResourceDataSource groupResourceDataSource;
     private final GroupMessageDataSource groupMessageDataSource;
     private final GroupMemberDataSource groupMemberDataSource;
+    private final GroupInvitationDataSource groupInvitationDataSource;
 
     public GroupRepository(GroupDao groupDao) {
         this.firestore = FirebaseFirestore.getInstance();
@@ -63,6 +67,7 @@ public class GroupRepository {
         this.messagesCollection = firestore.collection("group_messages");
         this.usersCollection = firestore.collection("users");
         this.resourcesCollection = firestore.collection("group_resources");
+        this.invitationsCollection = firestore.collection("project_invitations");
 
         this.groupInfoDataSource = new GroupInfoDataSource(
                 auth,
@@ -84,6 +89,7 @@ public class GroupRepository {
         this.groupResourceDataSource = new GroupResourceDataSource(auth, storageRoot, resourcesCollection);
         this.groupMessageDataSource = new GroupMessageDataSource(auth, messagesCollection);
         this.groupMemberDataSource = new GroupMemberDataSource(auth, membersCollection, usersCollection, groupsCollection);
+        this.groupInvitationDataSource = new GroupInvitationDataSource(auth, invitationsCollection, usersCollection, membersCollection, groupsCollection);
     }
 
     public LiveData<List<Group>> getUserGroups() {
@@ -176,5 +182,24 @@ public class GroupRepository {
 
     public void addMemberByUsername(String groupId, String username, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         groupMemberDataSource.addMemberByUsername(groupId, username, onSuccess, onFailure);
+    }
+
+    // ==================== INVITATION METHODS ====================
+
+    public void sendProjectInvitation(String groupId, String groupName, String usernameOrEmail,
+                                      OnSuccessListener<ProjectInvitation> onSuccess, OnFailureListener onFailure) {
+        groupInvitationDataSource.sendInvitation(groupId, groupName, usernameOrEmail, onSuccess, onFailure);
+    }
+
+    public LiveData<List<ProjectInvitation>> getPendingInvitations() {
+        return groupInvitationDataSource.getPendingInvitations();
+    }
+
+    public void acceptInvitation(ProjectInvitation invitation, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        groupInvitationDataSource.acceptInvitation(invitation, onSuccess, onFailure);
+    }
+
+    public void declineInvitation(ProjectInvitation invitation, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        groupInvitationDataSource.declineInvitation(invitation, onSuccess, onFailure);
     }
 }

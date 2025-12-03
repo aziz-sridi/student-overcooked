@@ -44,6 +44,33 @@
                 android:textColor="@color/textSecondary"
                 android:textSize="14sp" />
 
+            <!-- Pending Invitations Section -->
+            <LinearLayout
+                android:id="@+id/invitationsSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pending_invitations"
+                    android:textColor="@color/burntOrange"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/invitationsRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
             <!-- Empty State -->
             <LinearLayout
                 android:id="@+id/emptyStateLayout"

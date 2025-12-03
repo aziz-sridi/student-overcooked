@@ -45,7 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text="Complete React Assignment"
+            android:text="Complete Project Task"
             android:textColor="@color/textPrimary"
             android:textSize="16sp"
             android:textStyle="bold"

@@ -32,6 +32,7 @@ public class GroupMembersController {
 
     private final GroupMemberAdapter memberAdapter;
     private boolean isAdmin;
+    private String groupName;
 
     public GroupMembersController(@NonNull Fragment fragment,
                                   @NonNull GroupRepository groupRepository,
@@ -41,6 +42,7 @@ public class GroupMembersController {
         this.groupRepository = groupRepository;
         this.groupId = groupId;
         this.membersRecycler = membersRecycler;
+        this.groupName = "";
         this.memberAdapter = new GroupMemberAdapter(member -> {
             if (isAdmin) {
                 showRemoveMemberDialog(member);
@@ -54,6 +56,10 @@ public class GroupMembersController {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public void setGroupName(@Nullable String name) {
+        this.groupName = name != null ? name : "";
     }
 
     public void submitMembers(@Nullable List<GroupMember> members) {
@@ -79,23 +85,24 @@ public class GroupMembersController {
             return;
         }
         final EditText input = new EditText(fragment.requireContext());
-        input.setHint("Enter username");
+        input.setHint(R.string.invite_member_hint);
         int padding = (int) (16 * fragment.getResources().getDisplayMetrics().density);
         input.setPadding(padding, padding, padding, padding);
 
         new MaterialAlertDialogBuilder(fragment.requireContext())
-                .setTitle("Invite Member")
+                .setTitle(R.string.invite_member_title)
+                .setMessage(R.string.invite_member_message)
                 .setView(input)
-                .setPositiveButton("Invite", (dialog, which) -> {
-                    String username = input.getText().toString().trim();
-                    if (TextUtils.isEmpty(username)) {
+                .setPositiveButton(R.string.send_invitation, (dialog, which) -> {
+                    String usernameOrEmail = input.getText().toString().trim();
+                    if (TextUtils.isEmpty(usernameOrEmail)) {
                         return;
                     }
-                    groupRepository.addMemberByUsername(groupId, username,
-                            aVoid -> fragment.requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(fragment.requireContext(), "Member added!", Toast.LENGTH_SHORT).show()),
+                    groupRepository.sendProjectInvitation(groupId, groupName, usernameOrEmail,
+                            invitation -> fragment.requireActivity().runOnUiThread(() ->
+                                    Toast.makeText(fragment.requireContext(), R.string.invitation_sent, Toast.LENGTH_SHORT).show()),
                             e -> fragment.requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(fragment.requireContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()));
+                                    Toast.makeText(fragment.requireContext(), fragment.getString(R.string.invitation_failed, e.getMessage()), Toast.LENGTH_SHORT).show()));
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();

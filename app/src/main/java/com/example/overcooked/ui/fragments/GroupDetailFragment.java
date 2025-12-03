@@ -40,14 +40,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fragment counterpart to the legacy GroupDetailActivity. Handles tasks, chat, members,
+ * Handles tasks, chat, members,
+ * 
  * workspace resources, and project settings inside a single shared layout.
  */
 public class GroupDetailFragment extends Fragment {
 
     private static final String ARG_GROUP_ID = "group_id";
 
-    private enum Section {
+    public enum Section {
         TASKS,
         CHAT,
         MEMBERS,
@@ -102,6 +103,8 @@ public class GroupDetailFragment extends Fragment {
     private GroupMembersController membersController;
     private GroupSettingsController settingsController;
 
+    private static final String STATE_ACTIVE_SECTION = "active_section";
+
     public static GroupDetailFragment newInstance(@NonNull String groupId) {
         GroupDetailFragment fragment = new GroupDetailFragment();
         Bundle args = new Bundle();
@@ -126,6 +129,11 @@ public class GroupDetailFragment extends Fragment {
                 workspaceController.handleFilePicked(uri);
             }
         });
+        if (savedInstanceState != null) {
+            int ordinal = savedInstanceState.getInt(STATE_ACTIVE_SECTION, Section.TASKS.ordinal());
+            ordinal = Math.max(0, Math.min(ordinal, Section.values().length - 1));
+            activeSection = Section.values()[ordinal];
+        }
     }
 
     @Nullable
@@ -201,15 +209,24 @@ public class GroupDetailFragment extends Fragment {
         if (tasksRecycler != null) {
             tasksController = new GroupTasksController(this, groupRepository, groupId, tasksRecycler);
         }
-        chatController = new GroupChatController(this, groupRepository, groupId, chatRecycler, messageInput, sendButton);
-        membersController = new GroupMembersController(this, groupRepository, groupId, membersRecycler);
-        settingsController = new GroupSettingsController(this, groupRepository, groupId, btnEditProject, btnDeleteProject);
+        if (chatRecycler != null && messageInput != null && sendButton != null) {
+            chatController = new GroupChatController(this, groupRepository, groupId, chatRecycler, messageInput, sendButton);
+        }
+        if (membersRecycler != null) {
+            membersController = new GroupMembersController(this, groupRepository, groupId, membersRecycler);
+        }
+        if (btnEditProject != null && btnDeleteProject != null) {
+            settingsController = new GroupSettingsController(this, groupRepository, groupId, btnEditProject, btnDeleteProject);
+        }
     }
 
     private void setupTabs() {
         if (tabLayout == null) {
             return;
         }
+        // Clear existing listeners to avoid duplicates after view recreation
+        tabLayout.clearOnTabSelectedListeners();
+
         rebuildTabs();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -289,11 +306,18 @@ public class GroupDetailFragment extends Fragment {
                 if (settingsController != null) {
                     settingsController.setGroup(group);
                 }
+                if (membersController != null) {
+                    membersController.setGroupName(group.getName());
+                }
                 rebuildTabs();
                 updateManagementFlags();
             });
         }, e -> {
-            // ignored for now; UI already initialized
+            if (isAdded()) {
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(), "Failed to load group.", Toast.LENGTH_SHORT).show()
+                );
+            }
         });
 
         groupRepository.isGroupAdmin(groupId, admin -> {
@@ -367,9 +391,14 @@ public class GroupDetailFragment extends Fragment {
         if (currentGroup == null || getContext() == null) {
             return;
         }
+        String joinCode = currentGroup.getJoinCode();
+        if (TextUtils.isEmpty(joinCode)) {
+            Toast.makeText(requireContext(), "No join code available.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard != null) {
-            ClipData clip = ClipData.newPlainText("Join Code", currentGroup.getJoinCode());
+            ClipData clip = ClipData.newPlainText("Join Code", joinCode);
             clipboard.setPrimaryClip(clip);
             Toast.makeText(requireContext(), "Join code copied!", Toast.LENGTH_SHORT).show();
         }
@@ -382,102 +411,66 @@ public class GroupDetailFragment extends Fragment {
         return Section.TASKS;
     }
 
-    private void showSection(@NonNull Section section) {
-        activeSection = section;
-        switch (section) {
-            case CHAT:
-                showChatTab();
-                break;
-            case MEMBERS:
-                showMembersTab();
-                break;
-            case WORKSPACE:
-                if (isIndividualProject) {
-                    showWorkspaceTab();
-                } else {
-                    showSection(Section.TASKS);
-                }
-                break;
-            case SETTINGS:
-                if (isIndividualProject) {
-                    showSettingsTab();
-                } else {
-                    showSection(Section.TASKS);
-                }
-                break;
-            case TASKS:
-            default:
-                showTasksTab();
-                break;
-        }
-    }
-
-    private void showTasksTab() {
-        if (tasksContainer != null) tasksContainer.setVisibility(View.VISIBLE);
-        if (chatContainer != null) chatContainer.setVisibility(View.GONE);
-        if (membersContainer != null) membersContainer.setVisibility(View.GONE);
-        if (workspaceContainer != null) workspaceContainer.setVisibility(View.GONE);
-        if (settingsContainer != null) settingsContainer.setVisibility(View.GONE);
-        if (tasksController != null) {
-            tasksController.configureFab(fabAddTask);
-        } else if (fabAddTask != null) {
-            fabAddTask.setVisibility(View.GONE);
-        }
-    }
-
-    private void showChatTab() {
-        if (tasksContainer != null) tasksContainer.setVisibility(View.GONE);
-        if (chatContainer != null) chatContainer.setVisibility(View.VISIBLE);
-        if (membersContainer != null) membersContainer.setVisibility(View.GONE);
-        if (workspaceContainer != null) workspaceContainer.setVisibility(View.GONE);
-        if (settingsContainer != null) settingsContainer.setVisibility(View.GONE);
+    // Small helpers to reduce visibility boilerplate
+    private void setVisibility(View v, int visibility) { if (v != null) v.setVisibility(visibility); }
+    private void hideFab() {
         if (fabAddTask != null) {
             fabAddTask.setVisibility(View.GONE);
             fabAddTask.setOnClickListener(null);
         }
     }
 
-    private void showMembersTab() {
-        if (tasksContainer != null) tasksContainer.setVisibility(View.GONE);
-        if (chatContainer != null) chatContainer.setVisibility(View.GONE);
-        if (membersContainer != null) membersContainer.setVisibility(View.VISIBLE);
-        if (workspaceContainer != null) workspaceContainer.setVisibility(View.GONE);
-        if (settingsContainer != null) settingsContainer.setVisibility(View.GONE);
-        if (membersController != null) {
-            membersController.configureFab(fabAddTask);
-        } else if (fabAddTask != null) {
-            fabAddTask.setVisibility(View.GONE);
+    // Data-driven section rendering
+    private interface FabConfigurator { void configure(FloatingActionButton fab); }
+    private void renderSection(@NonNull View visibleContainer, @Nullable FabConfigurator configurator) {
+        setVisibility(tasksContainer, visibleContainer == tasksContainer ? View.VISIBLE : View.GONE);
+        setVisibility(chatContainer, visibleContainer == chatContainer ? View.VISIBLE : View.GONE);
+        setVisibility(membersContainer, visibleContainer == membersContainer ? View.VISIBLE : View.GONE);
+        setVisibility(workspaceContainer, visibleContainer == workspaceContainer ? View.VISIBLE : View.GONE);
+        setVisibility(settingsContainer, visibleContainer == settingsContainer ? View.VISIBLE : View.GONE);
+        if (configurator != null && fabAddTask != null) {
+            configurator.configure(fabAddTask);
+        } else {
+            hideFab();
         }
     }
 
-    private void showWorkspaceTab() {
-        if (tasksContainer != null) tasksContainer.setVisibility(View.GONE);
-        if (chatContainer != null) chatContainer.setVisibility(View.GONE);
-        if (membersContainer != null) membersContainer.setVisibility(View.GONE);
-        if (workspaceContainer != null) workspaceContainer.setVisibility(View.VISIBLE);
-        if (settingsContainer != null) settingsContainer.setVisibility(View.GONE);
-        if (workspaceController != null && fabAddTask != null) {
-            workspaceController.configureFab(fabAddTask);
-        } else if (fabAddTask != null) {
-            fabAddTask.setVisibility(View.GONE);
+    private void showSection(@NonNull Section section) {
+        activeSection = section;
+        switch (section) {
+            case CHAT:
+                renderSection(chatContainer, null);
+                break;
+            case MEMBERS:
+                renderSection(membersContainer, membersController != null ? fab -> membersController.configureFab(fab) : null);
+                break;
+            case WORKSPACE:
+                if (!isIndividualProject) { showSection(Section.TASKS); break; }
+                renderSection(workspaceContainer, workspaceController != null ? fab -> workspaceController.configureFab(fab) : null);
+                break;
+            case SETTINGS:
+                if (!isIndividualProject) { showSection(Section.TASKS); break; }
+                renderSection(settingsContainer, null);
+                break;
+            case TASKS:
+            default:
+                renderSection(tasksContainer, tasksController != null ? fab -> tasksController.configureFab(fab) : null);
+                break;
         }
     }
 
-    private void showSettingsTab() {
-        if (tasksContainer != null) tasksContainer.setVisibility(View.GONE);
-        if (chatContainer != null) chatContainer.setVisibility(View.GONE);
-        if (membersContainer != null) membersContainer.setVisibility(View.GONE);
-        if (workspaceContainer != null) workspaceContainer.setVisibility(View.GONE);
-        if (settingsContainer != null) settingsContainer.setVisibility(View.VISIBLE);
-        if (fabAddTask != null) {
-            fabAddTask.setVisibility(View.GONE);
-        }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_ACTIVE_SECTION, activeSection.ordinal());
     }
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (tabLayout != null) {
+            tabLayout.clearOnTabSelectedListeners();
+        }
         workspaceController = null;
         tasksController = null;
         chatController = null;

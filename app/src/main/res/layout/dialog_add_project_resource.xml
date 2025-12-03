@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="24dp"
-    app:cardElevation="6dp">
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/cardBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,36 +13,64 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_workspace_item_title"
-            android:textColor="@color/textPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
 
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_resource_file"
+                android:background="@drawable/bg_avatar_circle"
+                android:padding="8dp"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/add_workspace_item_title"
+                android:textColor="@color/textPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Title Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/resourceTitleLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/resource_title_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginBottom="12dp">
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/resourceTitleInput"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Type Dropdown -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/resourceTypeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/resource_type_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_marginBottom="12dp">
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/resourceTypeDropdown"
@@ -51,12 +80,17 @@
                 android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Content Input (for notes/links) -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/resourceContentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/resource_note_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -65,52 +99,87 @@
                 android:layout_height="wrap_content"
                 android:minLines="3"
                 android:gravity="top"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine|textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+        <!-- File Picker Section -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/filePickerSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/divider"
+            app:cardBackgroundColor="@color/cream">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/resourcePickFileButton"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/select_file"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:icon="@drawable/ic_resource_file"
-                app:iconGravity="start" />
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/resourceFileSummary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/workspace_file_not_selected"
-                android:textColor="@color/textSecondary"
-                android:layout_marginTop="8dp" />
+                <ImageView
+                    android:id="@+id/filePickerIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_resource_file"
+                    app:tint="@color/textSecondary" />
 
-            <TextView
-                android:id="@+id/resourceClearFileButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/clear_file"
-                android:textColor="@color/burntOrange"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp"
-                android:visibility="gone" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/resourceFileSummary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/workspace_file_not_selected"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="14sp"
+                    android:gravity="center" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/resourcePickFileButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_file"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        app:icon="@drawable/ic_resource_file"
+                        app:iconGravity="start"
+                        app:cornerRadius="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/resourceClearFileButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/clear_file"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:textColor="@color/tomatoRed"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Save Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/resourceSaveButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:text="@string/save"
             app:backgroundTint="@color/burntOrange"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="16dp" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -16,7 +16,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.overcooked.MainActivity;
+import com.example.overcooked.OvercookedApplication;
 import com.example.overcooked.R;
+import com.example.overcooked.data.repository.UserRepository;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,8 +39,10 @@ public class ProfileFragment extends Fragment {
     private Switch darkModeSwitch;
     private LinearLayout logoutSection;
     private LinearLayout aboutSection;
+    private TextView coinScoreText;
 
     private FirebaseAuth auth;
+    private UserRepository userRepository;
 
     @Nullable
     @Override
@@ -51,10 +55,12 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         auth = FirebaseAuth.getInstance();
+        userRepository = ((OvercookedApplication) requireActivity().getApplication()).getUserRepository();
         
         initializeViews(view);
         setupUserInfo();
         setupClickListeners();
+        observeData();
     }
 
     private void initializeViews(View view) {
@@ -68,6 +74,15 @@ public class ProfileFragment extends Fragment {
         darkModeSwitch = view.findViewById(R.id.darkModeSwitch);
         logoutSection = view.findViewById(R.id.logoutSection);
         aboutSection = view.findViewById(R.id.aboutSection);
+        coinScoreText = view.findViewById(R.id.coinScoreText);
+        
+        // Setup coin score card click listener for shop
+        View coinScoreCard = view.findViewById(R.id.coinScoreCard);
+        if (coinScoreCard != null) {
+            coinScoreCard.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), com.example.overcooked.ui.ShopActivity.class));
+            });
+        }
     }
 
     private void setupUserInfo() {
@@ -114,6 +129,15 @@ public class ProfileFragment extends Fragment {
         logoutSection.setOnClickListener(v -> showLogoutConfirmation());
 
         aboutSection.setOnClickListener(v -> showAboutDialog());
+    }
+
+    private void observeData() {
+        // Observe user data for coins
+        userRepository.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null && coinScoreText != null) {
+                coinScoreText.setText(String.valueOf(user.getCoins()));
+            }
+        });
     }
 
     private void showLogoutConfirmation() {

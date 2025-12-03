@@ -19,6 +19,7 @@ import com.example.overcooked.R;
 import com.example.overcooked.data.model.Task;
 import com.example.overcooked.data.model.TaskStatus;
 import com.example.overcooked.data.repository.TaskRepository;
+import com.example.overcooked.data.repository.UserRepository;
 import com.example.overcooked.ui.adapter.TaskListAdapter;
 import com.example.overcooked.ui.dialog.AddEditTaskDialog;
 import com.example.overcooked.ui.dialog.TaskDetailsDialog;
@@ -45,10 +46,12 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
     private TextView taskCountText;
     private View emptyStateLayout;
     private FloatingActionButton fabAddTask;
+    private TextView coinScoreText;
 
     private TaskListAdapter taskAdapter;
 
     private TaskRepository taskRepository;
+    private UserRepository userRepository;
 
     private List<Task> allTasks = new ArrayList<>();
     private TaskFilter currentFilter = TaskFilter.ALL;
@@ -64,6 +67,7 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
         super.onViewCreated(view, savedInstanceState);
         
         taskRepository = ((OvercookedApplication) requireActivity().getApplication()).getTaskRepository();
+        userRepository = ((OvercookedApplication) requireActivity().getApplication()).getUserRepository();
         
         initializeViews(view);
         setupAdapters();
@@ -82,6 +86,15 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
         taskCountText = view.findViewById(R.id.taskCountText);
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         fabAddTask = view.findViewById(R.id.fabAddTask);
+        coinScoreText = view.findViewById(R.id.coinScoreText);
+        
+        // Setup coin score card click listener for shop
+        View coinScoreCard = view.findViewById(R.id.coinScoreCard);
+        if (coinScoreCard != null) {
+            coinScoreCard.setOnClickListener(v -> {
+                startActivity(new android.content.Intent(requireContext(), com.example.overcooked.ui.ShopActivity.class));
+            });
+        }
     }
 
     private void setupAdapters() {
@@ -185,6 +198,13 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
     }
 
     private void observeData() {
+        // Observe user data for coins
+        userRepository.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null && coinScoreText != null) {
+                coinScoreText.setText(String.valueOf(user.getCoins()));
+            }
+        });
+        
         taskRepository.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
             allTasks = tasks != null ? tasks : new ArrayList<>();
             applyFilter();

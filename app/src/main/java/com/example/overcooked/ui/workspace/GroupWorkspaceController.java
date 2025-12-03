@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +64,7 @@ public class GroupWorkspaceController {
     private ActivityResultLauncher<String[]> filePickerLauncher;
     private TextView workspaceFileSummaryView;
     private View workspaceFileClearButton;
+    private ImageView workspaceFilePickerIcon;
     private boolean isIndividualProject;
 
     public GroupWorkspaceController(@NonNull Fragment fragment,
@@ -158,12 +160,14 @@ public class GroupWorkspaceController {
         View filePickerSection = dialogView.findViewById(R.id.filePickerSection);
         MaterialButton pickFileButton = dialogView.findViewById(R.id.resourcePickFileButton);
         TextView fileSummary = dialogView.findViewById(R.id.resourceFileSummary);
-        TextView clearFileButton = dialogView.findViewById(R.id.resourceClearFileButton);
+        View clearFileButton = dialogView.findViewById(R.id.resourceClearFileButton);
+        ImageView filePickerIcon = dialogView.findViewById(R.id.filePickerIcon);
         MaterialButton saveButton = dialogView.findViewById(R.id.resourceSaveButton);
 
         workspaceFileSelection.clear();
         workspaceFileSummaryView = fileSummary;
         workspaceFileClearButton = clearFileButton;
+        workspaceFilePickerIcon = filePickerIcon;
         updateWorkspaceFileSummaryViews();
 
         pickFileButton.setOnClickListener(v -> openWorkspaceFilePicker());
@@ -202,6 +206,7 @@ public class GroupWorkspaceController {
             workspaceFileSelection.clear();
             workspaceFileSummaryView = null;
             workspaceFileClearButton = null;
+            workspaceFilePickerIcon = null;
         });
 
         final CharSequence defaultButtonText = saveButton.getText();
@@ -370,8 +375,32 @@ public class GroupWorkspaceController {
         ProjectResourceType type = resource.getType() != null ? resource.getType() : ProjectResourceType.NOTE;
         if (type == ProjectResourceType.LINK) {
             openResourceLink(resource);
+        } else if (type == ProjectResourceType.FILE) {
+            openResourceFile(resource);
         } else {
             showResourceDetailsDialog(resource);
+        }
+    }
+
+    private void openResourceFile(@NonNull ProjectResource resource) {
+        String fileUrl = resource.getFileUrl();
+        if (TextUtils.isEmpty(fileUrl)) {
+            Toast.makeText(requireContext(), R.string.resource_open_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(fileUrl));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            fragment.startActivity(intent);
+        } catch (Exception e) {
+            // If no app can handle it, try opening in browser
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fileUrl));
+                fragment.startActivity(browserIntent);
+            } catch (Exception e2) {
+                Toast.makeText(requireContext(), R.string.resource_open_error, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -434,14 +463,24 @@ public class GroupWorkspaceController {
             }
             long size = Math.max(0L, workspaceFileSelection.getSizeBytes());
             String sizeLabel = Formatter.formatShortFileSize(requireContext(), size);
-            workspaceFileSummaryView.setText(requireContext().getString(R.string.workspace_file_selected_template, displayName, sizeLabel));
+            workspaceFileSummaryView.setText(displayName + "\n" + sizeLabel);
+            workspaceFileSummaryView.setTextColor(ContextCompat.getColor(requireContext(), R.color.textPrimary));
             if (workspaceFileClearButton != null) {
                 workspaceFileClearButton.setVisibility(View.VISIBLE);
             }
+            if (workspaceFilePickerIcon != null) {
+                workspaceFilePickerIcon.setImageResource(R.drawable.ic_check);
+                workspaceFilePickerIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.successGreen));
+            }
         } else {
             workspaceFileSummaryView.setText(R.string.workspace_file_not_selected);
+            workspaceFileSummaryView.setTextColor(ContextCompat.getColor(requireContext(), R.color.textSecondary));
             if (workspaceFileClearButton != null) {
                 workspaceFileClearButton.setVisibility(View.GONE);
+            }
+            if (workspaceFilePickerIcon != null) {
+                workspaceFilePickerIcon.setImageResource(R.drawable.ic_resource_file);
+                workspaceFilePickerIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.textSecondary));
             }
         }
     }

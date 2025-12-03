@@ -1,5 +1,6 @@
 package com.example.overcooked.ui.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,8 +76,10 @@ public class ProjectResourceAdapter extends ListAdapter<ProjectResource, Project
         private final ImageView iconView;
         private final TextView titleText;
         private final TextView subtitleText;
+        private final TextView typeBadge;
         private final TextView timestampText;
         private final ImageButton menuButton;
+        private final ImageView openIcon;
         private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
         ResourceViewHolder(@NonNull View itemView) {
@@ -82,51 +87,90 @@ public class ProjectResourceAdapter extends ListAdapter<ProjectResource, Project
             iconView = itemView.findViewById(R.id.resourceIcon);
             titleText = itemView.findViewById(R.id.resourceTitle);
             subtitleText = itemView.findViewById(R.id.resourceSubtitle);
+            typeBadge = itemView.findViewById(R.id.resourceTypeBadge);
             timestampText = itemView.findViewById(R.id.resourceTimestamp);
             menuButton = itemView.findViewById(R.id.resourceMenuButton);
+            openIcon = itemView.findViewById(R.id.resourceOpenIcon);
         }
 
         void bind(ProjectResource resource, ResourceActionListener listener) {
-            titleText.setText(resource.getTitle().isEmpty() ? itemView.getContext().getString(R.string.untitled_resource) : resource.getTitle());
+            // Set title
+            String title = resource.getTitle();
+            if (TextUtils.isEmpty(title)) {
+                title = itemView.getContext().getString(R.string.untitled_resource);
+            }
+            titleText.setText(title);
 
             ProjectResourceType type = resource.getType() != null ? resource.getType() : ProjectResourceType.NOTE;
-            String subtitle = resource.getContent() != null ? resource.getContent() : "";
+            
+            // Build subtitle based on type
+            String subtitle;
             if (type == ProjectResourceType.FILE) {
                 String displayName = !TextUtils.isEmpty(resource.getFileName())
                         ? resource.getFileName()
                         : itemView.getContext().getString(R.string.untitled_resource);
                 if (resource.getFileSizeBytes() > 0) {
                     String sizeLabel = Formatter.formatShortFileSize(itemView.getContext(), resource.getFileSizeBytes());
-                    subtitle = itemView.getContext().getString(R.string.workspace_file_selected_template, displayName, sizeLabel);
+                    subtitle = displayName + " • " + sizeLabel;
                 } else {
                     subtitle = displayName;
                 }
-                if (!TextUtils.isEmpty(resource.getContent())) {
-                    subtitle = subtitle + " | " + resource.getContent();
-                }
+            } else if (type == ProjectResourceType.LINK) {
+                subtitle = resource.getContent() != null ? resource.getContent() : "";
+            } else {
+                subtitle = resource.getContent() != null ? resource.getContent() : "";
             }
             subtitleText.setText(subtitle);
 
+            // Set timestamp
             if (resource.getCreatedAt() != null) {
                 timestampText.setText(dateFormat.format(resource.getCreatedAt()));
+                timestampText.setVisibility(View.VISIBLE);
             } else {
-                timestampText.setText("");
+                timestampText.setVisibility(View.GONE);
             }
 
+            // Set icon based on type
             int iconRes;
+            int badgeColor;
+            String badgeText;
             switch (type) {
                 case FILE:
                     iconRes = R.drawable.ic_resource_file;
+                    badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.burntOrange);
+                    badgeText = "FILE";
                     break;
                 case LINK:
                     iconRes = R.drawable.ic_resource_link;
+                    badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.successGreen);
+                    badgeText = "LINK";
                     break;
                 default:
                     iconRes = R.drawable.ic_resource_note;
+                    badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.mustardYellow);
+                    badgeText = "NOTE";
                     break;
             }
             iconView.setImageResource(iconRes);
 
+            // Set type badge
+            if (typeBadge != null) {
+                typeBadge.setText(badgeText);
+                Drawable badgeBackground = typeBadge.getBackground();
+                if (badgeBackground != null) {
+                    Drawable wrapped = DrawableCompat.wrap(badgeBackground.mutate());
+                    DrawableCompat.setTint(wrapped, badgeColor);
+                    typeBadge.setBackground(wrapped);
+                }
+            }
+
+            // Show open icon for files and links
+            if (openIcon != null) {
+                openIcon.setVisibility(type == ProjectResourceType.FILE || type == ProjectResourceType.LINK 
+                        ? View.VISIBLE : View.GONE);
+            }
+
+            // Click listeners
             itemView.setOnClickListener(v -> listener.onResourceClick(resource));
             menuButton.setOnClickListener(v -> listener.onResourceDelete(resource));
         }
