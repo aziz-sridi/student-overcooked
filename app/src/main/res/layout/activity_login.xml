@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -48,7 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password_hint"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="8dp"
+        app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordInput"
@@ -56,6 +58,15 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/forgotPasswordLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/forgot_password"
+        android:textColor="@color/primaryAction"
+        android:textStyle="bold"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
@@ -75,7 +86,7 @@
         android:id="@+id/signupLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Don't have an account? Sign Up"
+        android:text="@string/dont_have_account"
         android:textColor="@color/primaryAction"
         android:textSize="16sp"/>
 

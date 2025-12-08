@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.overcooked"
+    namespace = "com.student.overcooked"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.overcooked"
+        applicationId = "com.student.overcooked"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.database)
     implementation(libs.play.services.auth)
 
     // Lifecycle & ViewModel

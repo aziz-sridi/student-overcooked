@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cream"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="112dp"
+            android:layout_height="112dp"
+            android:src="@drawable/ic_mail"
+            android:tint="@color/burntOrange"
+            android:contentDescription="@string/email_verification_title"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/verificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_verification_title"
+            android:textColor="@color/textPrimary"
+            android:textStyle="bold"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/verificationSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email_verification_subtitle"
+            android:textColor="@color/textSecondary"
+            android:gravity="center"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/verificationEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textPrimary"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/openInboxButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_email_app"
+            android:layout_marginTop="32dp"
+            android:padding="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/resendVerificationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/resend_verification_email"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/burntOrange"/>
+
+        <TextView
+            android:id="@+id/continueToLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back_to_login"
+            android:textColor="@color/primaryAction"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"/>
+
+    </LinearLayout>
+</ScrollView>

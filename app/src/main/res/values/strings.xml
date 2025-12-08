@@ -3,14 +3,17 @@
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
     <string name="login_button">Login</string>
+    <string name="logging_in">Logging in...</string>
     <string name="forgot_password">Forgot password?</string>
-    <string name="tagline">Let\'s survive another deadline…</string>
+    <string name="dont_have_account">Don\'t have an account? Sign up</string>
+    <string name="tagline">Let\'s survive another deadline...</string>
     <string name="signup_title">Create Your Account</string>
     <string name="fullname_label">Full Name</string>
     <string name="fullname_hint">Enter your full name</string>
     <string name="email_label">Email</string>
     <string name="password_label">Password</string>
     <string name="signup_button">Sign Up</string>
+    <string name="signup_in_progress">Signing up...</string>
     <string name="already_have_account">Already have an account? Log in</string>
     <string name="confirm_password_label">Confirm Password</string>
     <string name="confirm_password_hint">Re-enter your password</string>
@@ -146,6 +149,21 @@
     <string name="workspace_item_saved">Workspace item saved</string>
     <string name="untitled_resource">Untitled</string>
     <string name="uploading_file">Uploading...</string>
+    <string name="send_reset_link">Send reset link</string>
+    <string name="sending_email">Sending...</string>
+    <string name="reset_password_title">Reset password</string>
+    <string name="reset_password_subtitle">Enter the email you used to sign up and we\'ll send you reset instructions.</string>
+    <string name="reset_email_sent_title">Reset link sent</string>
+    <string name="reset_email_sent_message">We just sent a link to %1$s. Tap it to create a new password.</string>
+    <string name="reset_email_sent_toast">Reset email sent</string>
+    <string name="open_email_app">Open email app</string>
+    <string name="back_to_login">Back to login</string>
+    <string name="email_required">Email is required</string>
+    <string name="resend_verification_email">Resend verification email</string>
+    <string name="email_verification_title">Verify your email</string>
+    <string name="email_verification_subtitle">We sent a confirmation link. Please verify before logging in.</string>
+    <string name="verification_email_sent">Verification email sent</string>
+    <string name="default_web_client_id">888637651520-4115251u0gqb3sd7b5a2vrgqtq0kigkm.apps.googleusercontent.com</string>
 
     <!-- Project Details Activity -->
     <string name="progress_label">Progress</string>
