@@ -1,20 +1,25 @@
 package com.student.overcooked.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+
+import android.widget.Toast;
 
 import com.student.overcooked.R;
+import com.student.overcooked.OvercookedApplication;
+import com.student.overcooked.data.repository.GroupRepository;
 import com.student.overcooked.ui.fragments.GroupDetailFragment;
-import com.student.overcooked.ui.fragments.GroupsFragment;
-import com.student.overcooked.ui.fragments.HomeFragment;
-import com.student.overcooked.ui.fragments.ProfileFragment;
-import com.student.overcooked.ui.fragments.TasksFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.student.overcooked.util.ConnectivityObserver;
+import com.student.overcooked.util.NotificationHelper;
+import com.student.overcooked.util.NotificationSettings;
+import com.student.overcooked.sync.SyncWorker;
+import com.student.overcooked.data.LocalCoinStore;
 
 /**
  * Main Activity with Bottom Navigation
@@ -23,70 +28,114 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainNavActivity extends AppCompatActivity {
 
     private static final String KEY_ACTIVE_TAB = "active_tab";
-    private static final String TAG_HOME = "home";
-    private static final String TAG_TASKS = "tasks";
-    private static final String TAG_GROUPS = "groups";
-    private static final String TAG_PROFILE = "profile";
-    private static final String TAG_GROUP_DETAIL = "group_detail";
 
     private BottomNavigationView bottomNavigation;
 
-    // Fragment instances
-    private HomeFragment homeFragment;
-    private TasksFragment tasksFragment;
-    private GroupsFragment groupsFragment;
-    private ProfileFragment profileFragment;
-
-    private Fragment activeFragment;
+    private MainNavFragments navFragments;
+    private MainNavInAppNotifications inAppNotifications;
     private int currentTabId = R.id.nav_home;
+
+    private ConnectivityObserver connectivityObserver;
+    private Observer<Boolean> connectivityListener;
+    private boolean lastOnline = true;
+
+    private GroupRepository groupRepository;
+    private NotificationHelper notificationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_nav);
 
+        groupRepository = ((OvercookedApplication) getApplication()).getGroupRepository();
+        notificationHelper = new NotificationHelper(this);
+
+        connectivityObserver = new ConnectivityObserver(this);
+
         bottomNavigation = findViewById(R.id.bottom_navigation);
+        navFragments = new MainNavFragments(this);
 
         int initialTab = savedInstanceState != null
                 ? savedInstanceState.getInt(KEY_ACTIVE_TAB, R.id.nav_home)
                 : R.id.nav_home;
 
         if (savedInstanceState == null) {
-            setupFragments();
+            navFragments.setupNew();
         } else {
-            restoreFragments(initialTab);
+            navFragments.restore(initialTab);
         }
 
         setupBottomNavigation();
         bottomNavigation.setSelectedItemId(initialTab);
         currentTabId = initialTab;
+
+        setupConnectivityListener();
+
+        // Observe for notifications while app is in foreground.
+        inAppNotifications = new MainNavInAppNotifications(this, groupRepository, notificationHelper);
+        inAppNotifications.setupIfEnabled(this);
+
+        // Handle navigation requests if launched from a notification.
+        handleNavigationIntent(getIntent());
     }
 
-    private void setupFragments() {
-        homeFragment = new HomeFragment();
-        tasksFragment = new TasksFragment();
-        groupsFragment = new GroupsFragment();
-        profileFragment = new ProfileFragment();
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleNavigationIntent(intent);
+    }
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.nav_host_fragment, homeFragment, TAG_HOME);
-        transaction.add(R.id.nav_host_fragment, tasksFragment, TAG_TASKS);
-        transaction.hide(tasksFragment);
-        transaction.add(R.id.nav_host_fragment, groupsFragment, TAG_GROUPS);
-        transaction.hide(groupsFragment);
-        transaction.add(R.id.nav_host_fragment, profileFragment, TAG_PROFILE);
-        transaction.hide(profileFragment);
-        transaction.setReorderingAllowed(true);
-        transaction.commitNow();
-        activeFragment = homeFragment;
+    private void handleNavigationIntent(Intent intent) {
+        if (intent == null) return;
+        String navigateTo = intent.getStringExtra("navigate_to");
+        String groupId = intent.getStringExtra("group_id");
+
+        if (navigateTo == null) return;
+
+        if ("tasks".equals(navigateTo)) {
+            navigateToTasks();
+            return;
+        }
+        if ("groups".equals(navigateTo)) {
+            navigateToGroups();
+            if (groupId != null && !groupId.isEmpty()) {
+                // Delay until the Groups fragment is active.
+                bottomNavigation.post(() -> navigateToGroupDetail(groupId));
+            }
+        }
+    }
+
+    private void setupInAppNotificationObservers() {
+        // moved to MainNavInAppNotifications
+    }
+
+    private void setupConnectivityListener() {
+        connectivityListener = online -> {
+            if (online == null) return;
+            if (!online) {
+                if (lastOnline) {
+                    Toast.makeText(this, "You are offline. Progress will sync when back online.", Toast.LENGTH_SHORT).show();
+                }
+                lastOnline = false;
+            } else {
+                if (!lastOnline) {
+                    Toast.makeText(this, "Back online. Syncing progress…", Toast.LENGTH_SHORT).show();
+                }
+                lastOnline = true;
+                if (new LocalCoinStore(this).getPendingDelta() != 0) {
+                    SyncWorker.enqueue(this);
+                }
+            }
+        };
     }
 
     private void setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener(item -> {
-            Fragment target = fragmentForItemId(item.getItemId());
+            Fragment target = navFragments.fragmentForItemId(item.getItemId());
             if (target != null) {
-                clearGroupDetailIfPresent();
-                switchFragment(target);
+                navFragments.clearGroupDetailIfPresent(currentTabId);
+                navFragments.switchTo(target);
                 currentTabId = item.getItemId();
                 return true;
             }
@@ -94,115 +143,18 @@ public class MainNavActivity extends AppCompatActivity {
         });
     }
 
-    private void switchFragment(Fragment fragment) {
-        if (fragment == null || fragment == activeFragment) {
-            return;
-        }
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (activeFragment != null) {
-            transaction.hide(activeFragment);
-        }
-        if (!fragment.isAdded()) {
-            transaction.add(R.id.nav_host_fragment, fragment, getTagForFragment(fragment));
-        }
-        transaction.show(fragment);
-        transaction.setReorderingAllowed(true);
-        transaction.commit();
-        activeFragment = fragment;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        connectivityObserver.start();
+        connectivityObserver.isOnline().observe(this, connectivityListener);
     }
 
-    private void restoreFragments(int selectedItemId) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        homeFragment = (HomeFragment) fragmentManager.findFragmentByTag(TAG_HOME);
-        tasksFragment = (TasksFragment) fragmentManager.findFragmentByTag(TAG_TASKS);
-        groupsFragment = (GroupsFragment) fragmentManager.findFragmentByTag(TAG_GROUPS);
-        profileFragment = (ProfileFragment) fragmentManager.findFragmentByTag(TAG_PROFILE);
-
-        if (homeFragment == null) {
-            homeFragment = new HomeFragment();
-        }
-        if (tasksFragment == null) {
-            tasksFragment = new TasksFragment();
-        }
-        if (groupsFragment == null) {
-            groupsFragment = new GroupsFragment();
-        }
-        if (profileFragment == null) {
-            profileFragment = new ProfileFragment();
-        }
-
-        Fragment target = fragmentForItemId(selectedItemId);
-        if (target == null) {
-            target = homeFragment;
-        }
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        attachFragment(transaction, homeFragment, TAG_HOME, target == homeFragment);
-        attachFragment(transaction, tasksFragment, TAG_TASKS, target == tasksFragment);
-        attachFragment(transaction, groupsFragment, TAG_GROUPS, target == groupsFragment);
-        attachFragment(transaction, profileFragment, TAG_PROFILE, target == profileFragment);
-        transaction.setReorderingAllowed(true);
-        transaction.commitNow();
-        activeFragment = target;
-    }
-
-    private void attachFragment(FragmentTransaction transaction, Fragment fragment, String tag, boolean shouldShow) {
-        if (fragment == null) {
-            return;
-        }
-        if (!fragment.isAdded()) {
-            transaction.add(R.id.nav_host_fragment, fragment, tag);
-        }
-        if (shouldShow) {
-            transaction.show(fragment);
-        } else {
-            transaction.hide(fragment);
-        }
-    }
-
-    private void clearGroupDetailIfPresent() {
-        if (activeFragment instanceof GroupDetailFragment) {
-            getSupportFragmentManager().popBackStackImmediate();
-            activeFragment = fragmentForItemId(currentTabId);
-        }
-    }
-
-    private Fragment fragmentForItemId(int itemId) {
-        if (itemId == R.id.nav_home) {
-            if (homeFragment == null) {
-                homeFragment = new HomeFragment();
-            }
-            return homeFragment;
-        } else if (itemId == R.id.nav_tasks) {
-            if (tasksFragment == null) {
-                tasksFragment = new TasksFragment();
-            }
-            return tasksFragment;
-        } else if (itemId == R.id.nav_groups) {
-            if (groupsFragment == null) {
-                groupsFragment = new GroupsFragment();
-            }
-            return groupsFragment;
-        } else if (itemId == R.id.nav_profile) {
-            if (profileFragment == null) {
-                profileFragment = new ProfileFragment();
-            }
-            return profileFragment;
-        }
-        return null;
-    }
-
-    private String getTagForFragment(Fragment fragment) {
-        if (fragment instanceof HomeFragment) {
-            return TAG_HOME;
-        } else if (fragment instanceof TasksFragment) {
-            return TAG_TASKS;
-        } else if (fragment instanceof GroupsFragment) {
-            return TAG_GROUPS;
-        } else if (fragment instanceof ProfileFragment) {
-            return TAG_PROFILE;
-        }
-        return fragment.getClass().getSimpleName();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        connectivityObserver.stop();
+        connectivityObserver.isOnline().removeObserver(connectivityListener);
     }
 
     @Override
@@ -217,16 +169,7 @@ public class MainNavActivity extends AppCompatActivity {
      * Navigate to group detail fragment
      */
     public void navigateToGroupDetail(String groupId) {
-        GroupDetailFragment fragment = GroupDetailFragment.newInstance(groupId);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (activeFragment != null) {
-            transaction.hide(activeFragment);
-        }
-        transaction.add(R.id.nav_host_fragment, fragment, TAG_GROUP_DETAIL + "_" + groupId);
-        transaction.addToBackStack(TAG_GROUP_DETAIL);
-        transaction.setReorderingAllowed(true);
-        transaction.commit();
-        activeFragment = fragment;
+        navFragments.navigateToGroupDetail(groupId);
     }
 
     /**

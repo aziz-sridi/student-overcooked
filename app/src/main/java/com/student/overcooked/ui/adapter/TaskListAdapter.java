@@ -57,8 +57,8 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
             return Objects.equals(oldItem.getTitle(), newItem.getTitle()) &&
                    Objects.equals(oldItem.getDeadline(), newItem.getDeadline()) &&
                    oldItem.isCompleted() == newItem.isCompleted() &&
-                   oldItem.getPriority() == newItem.getPriority() &&
-                   oldItem.getStatus() == newItem.getStatus();
+                   Objects.equals(oldItem.getPriority(), newItem.getPriority()) &&
+                   Objects.equals(oldItem.getStatus(), newItem.getStatus());
         }
     };
 
@@ -117,7 +117,10 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
             // Set checkbox state without triggering listener
             checkbox.setOnCheckedChangeListener(null);
             checkbox.setChecked(task.isCompleted());
-            checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> onCheckChange.onCheckChange(task));
+            checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                android.util.Log.d("TaskListAdapter", "Checkbox changed for task: " + task.getTitle() + ", isChecked: " + isChecked);
+                onCheckChange.onCheckChange(task);
+            });
 
             // Priority indicator
             int priorityColor;

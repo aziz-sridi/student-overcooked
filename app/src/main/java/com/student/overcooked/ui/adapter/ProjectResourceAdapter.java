@@ -47,7 +47,7 @@ public class ProjectResourceAdapter extends ListAdapter<ProjectResource, Project
         public boolean areContentsTheSame(@NonNull ProjectResource oldItem, @NonNull ProjectResource newItem) {
                 return Objects.equals(oldItem.getTitle(), newItem.getTitle()) &&
                     Objects.equals(oldItem.getContent(), newItem.getContent()) &&
-                    oldItem.getType() == newItem.getType() &&
+                    Objects.equals(oldItem.getType(), newItem.getType()) &&
                     Objects.equals(oldItem.getFileName(), newItem.getFileName()) &&
                     Objects.equals(oldItem.getFileUrl(), newItem.getFileUrl()) &&
                     oldItem.getFileSizeBytes() == newItem.getFileSizeBytes();

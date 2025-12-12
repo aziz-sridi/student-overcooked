@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +22,9 @@ import com.student.overcooked.ui.MainNavActivity;
 import com.student.overcooked.ui.home.CookedMeterController;
 import com.student.overcooked.ui.home.HomeStatsController;
 import com.student.overcooked.ui.home.WorkNowController;
+import com.student.overcooked.data.LocalCoinStore;
+import com.student.overcooked.data.MascotPackStore;
+import com.student.overcooked.ui.common.CoinTopBarController;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -41,7 +46,10 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton fabAddTask;
     private TextView viewAllTasksText;
     private View emptyStateLayout;
-    private TextView coinScoreText;
+    private View btnChangeMascot;
+
+    private java.util.List<String> currentInventory;
+    private java.util.List<com.student.overcooked.data.model.Task> lastTasks;
 
     // Controllers
     private CookedMeterController cookedMeterController;
@@ -52,6 +60,7 @@ public class HomeFragment extends Fragment {
     private TaskRepository taskRepository;
     private ProjectRepository projectRepository;
     private com.student.overcooked.data.repository.UserRepository userRepository;
+    private CoinTopBarController coinTopBar;
 
     @Nullable
     @Override
@@ -66,8 +75,10 @@ public class HomeFragment extends Fragment {
         taskRepository = ((OvercookedApplication) requireActivity().getApplication()).getTaskRepository();
         projectRepository = ((OvercookedApplication) requireActivity().getApplication()).getProjectRepository();
         userRepository = ((OvercookedApplication) requireActivity().getApplication()).getUserRepository();
+        coinTopBar = new CoinTopBarController(this, new LocalCoinStore(requireContext()), userRepository);
         
         initializeViews(view);
+        coinTopBar.bind(view);
         initializeControllers();
         setupClickListeners();
         observeData();
@@ -85,14 +96,7 @@ public class HomeFragment extends Fragment {
         fabAddTask = view.findViewById(R.id.fabAddTask);
         viewAllTasksText = view.findViewById(R.id.viewAllTasksText);
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
-        coinScoreText = view.findViewById(R.id.coinScoreText);
-        
-        View coinScoreCard = view.findViewById(R.id.coinScoreCard);
-        if (coinScoreCard != null) {
-            coinScoreCard.setOnClickListener(v -> {
-                startActivity(new android.content.Intent(requireContext(), com.student.overcooked.ui.ShopActivity.class));
-            });
-        }
+        btnChangeMascot = view.findViewById(R.id.btnChangeMascot);
     }
 
     private void initializeControllers() {
@@ -105,7 +109,7 @@ public class HomeFragment extends Fragment {
                 cookedProgressBar,
                 cookedIcon
         );
-        homeStatsController = new HomeStatsController(this, quickStatsRecycler, coinScoreText);
+        homeStatsController = new HomeStatsController(this, quickStatsRecycler);
         workNowController = new WorkNowController(this, taskRepository, workNowRecycler, emptyStateLayout, fabAddTask);
     }
 
@@ -115,18 +119,67 @@ public class HomeFragment extends Fragment {
                 ((MainNavActivity) requireActivity()).navigateToTasks();
             }
         });
+
+        if (btnChangeMascot != null) {
+            btnChangeMascot.setOnClickListener(v -> showMascotPicker());
+        }
+    }
+
+    private void showMascotPicker() {
+        java.util.List<String> options = new java.util.ArrayList<>();
+        java.util.List<String> optionIds = new java.util.ArrayList<>();
+
+        // Default is always available
+        options.add("Default");
+        optionIds.add(MascotPackStore.PACK_DEFAULT);
+
+        java.util.List<String> inventory = currentInventory;
+        if (inventory != null) {
+            if (inventory.contains(MascotPackStore.PACK_GIGA_TOAST)) {
+                options.add("Giga Toast");
+                optionIds.add(MascotPackStore.PACK_GIGA_TOAST);
+            }
+            if (inventory.contains(MascotPackStore.PACK_STUDENT)) {
+                options.add("Student");
+                optionIds.add(MascotPackStore.PACK_STUDENT);
+            }
+            if (inventory.contains(MascotPackStore.PACK_POTATO)) {
+                options.add("Potato");
+                optionIds.add(MascotPackStore.PACK_POTATO);
+            }
+        }
+
+        if (options.size() == 1) {
+            Toast.makeText(requireContext(), "Buy a mascot pack in the shop first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String selected = new MascotPackStore(requireContext()).getSelectedPackId();
+        int checkedIndex = optionIds.indexOf(selected);
+        if (checkedIndex < 0) checkedIndex = 0;
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Choose mascot")
+                .setSingleChoiceItems(options.toArray(new String[0]), checkedIndex, (dialog, which) -> {
+                    String packId = optionIds.get(which);
+                    new MascotPackStore(requireContext()).setSelectedPackId(packId);
+                    cookedMeterController.render(lastTasks);
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void observeData() {
-        // Observe user data for coins
         userRepository.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null && coinScoreText != null) {
-                coinScoreText.setText(String.valueOf(user.getCoins()));
+            if (user != null) {
+                currentInventory = user.getInventory();
             }
         });
 
         // Observe tasks for cooked meter and work now list
         taskRepository.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
+            lastTasks = tasks;
             cookedMeterController.render(tasks);
             workNowController.submitTasks(tasks);
         });

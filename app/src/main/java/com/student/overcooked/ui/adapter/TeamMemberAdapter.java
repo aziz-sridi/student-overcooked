@@ -3,6 +3,7 @@ package com.student.overcooked.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -67,7 +68,7 @@ public class TeamMemberAdapter extends ListAdapter<TeamMember, TeamMemberAdapter
 
     static class MemberViewHolder extends RecyclerView.ViewHolder {
         private final MaterialCardView cardView;
-        private final TextView memberAvatar;
+        private final ImageView memberAvatar;
         private final TextView memberName;
         private final TextView memberEmail;
 
@@ -83,18 +84,6 @@ public class TeamMemberAdapter extends ListAdapter<TeamMember, TeamMemberAdapter
             memberName.setText(member.getName());
             if (memberEmail != null) {
                 memberEmail.setText(formatRole(member.getRole().name()));
-            }
-            
-            // Set initials in avatar
-            if (memberAvatar != null) {
-                String[] nameParts = member.getName().split(" ");
-                StringBuilder initials = new StringBuilder();
-                for (int i = 0; i < Math.min(2, nameParts.length); i++) {
-                    if (!nameParts[i].isEmpty()) {
-                        initials.append(Character.toUpperCase(nameParts[i].charAt(0)));
-                    }
-                }
-                memberAvatar.setText(initials.length() > 0 ? initials.toString() : "?");
             }
 
             cardView.setOnClickListener(v -> onMemberClick.onMemberClick(member));

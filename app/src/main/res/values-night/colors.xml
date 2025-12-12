@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Night variants for existing color tokens -->
+    <color name="cream">#121212</color>
+
+    <color name="cardBackground">#1E1E1E</color>
+    <color name="cardStroke">#2A2A2A</color>
+
+    <color name="textPrimary">#FFFFFF</color>
+    <color name="textSecondary">#C2C2C2</color>
+
+    <color name="divider">#2A2A2A</color>
+    <color name="progressTrack">#2A2A2A</color>
+
+    <!-- Keep brand colors as-is in dark mode -->
+
+</resources>

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.student.overcooked.R;
 import com.student.overcooked.data.model.GroupTask;
 import com.student.overcooked.data.model.Priority;
+import com.student.overcooked.data.model.TaskStatus;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.card.MaterialCardView;
 
@@ -50,10 +51,11 @@ public class GroupTaskAdapter extends ListAdapter<GroupTask, GroupTaskAdapter.Ta
         public boolean areContentsTheSame(@NonNull GroupTask oldItem, @NonNull GroupTask newItem) {
             return Objects.equals(oldItem.getTitle(), newItem.getTitle()) &&
                    oldItem.isCompleted() == newItem.isCompleted() &&
+                   Objects.equals(oldItem.getStatus(), newItem.getStatus()) &&
                    Objects.equals(oldItem.getDeadline(), newItem.getDeadline()) &&
                    Objects.equals(oldItem.getDescription(), newItem.getDescription()) &&
                    Objects.equals(oldItem.getAssigneeName(), newItem.getAssigneeName()) &&
-                   oldItem.getPriority() == newItem.getPriority();
+                   Objects.equals(oldItem.getPriority(), newItem.getPriority());
         }
     };
 
@@ -146,15 +148,19 @@ public class GroupTaskAdapter extends ListAdapter<GroupTask, GroupTaskAdapter.Ta
 
             if (statusBadge != null) {
                 int badgeColor;
-                if (task.isCompleted()) {
+                TaskStatus status = task.getStatus() != null ? task.getStatus() : TaskStatus.NOT_STARTED;
+                if (status == TaskStatus.DONE || task.isCompleted()) {
                     statusBadge.setText(R.string.status_done);
                     badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.successGreen);
                 } else if (overdue) {
                     statusBadge.setText(R.string.status_overdue);
                     badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.tomatoRed);
-                } else {
+                } else if (status == TaskStatus.IN_PROGRESS) {
                     statusBadge.setText(R.string.status_in_progress);
                     badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.mustardYellow);
+                } else {
+                    statusBadge.setText(R.string.status_not_started);
+                    badgeColor = ContextCompat.getColor(itemView.getContext(), R.color.statusNotStarted);
                 }
 
                 Drawable badgeBackground = statusBadge.getBackground();

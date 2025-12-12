@@ -23,6 +23,8 @@ import com.student.overcooked.data.repository.UserRepository;
 import com.student.overcooked.ui.adapter.TaskListAdapter;
 import com.student.overcooked.ui.dialog.AddEditTaskDialog;
 import com.student.overcooked.ui.dialog.TaskDetailsDialog;
+import com.student.overcooked.data.LocalCoinStore;
+import com.student.overcooked.ui.common.CoinTopBarController;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,12 +48,12 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
     private TextView taskCountText;
     private View emptyStateLayout;
     private FloatingActionButton fabAddTask;
-    private TextView coinScoreText;
 
     private TaskListAdapter taskAdapter;
 
     private TaskRepository taskRepository;
     private UserRepository userRepository;
+    private CoinTopBarController coinTopBar;
 
     private List<Task> allTasks = new ArrayList<>();
     private TaskFilter currentFilter = TaskFilter.ALL;
@@ -68,8 +70,10 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
         
         taskRepository = ((OvercookedApplication) requireActivity().getApplication()).getTaskRepository();
         userRepository = ((OvercookedApplication) requireActivity().getApplication()).getUserRepository();
+        coinTopBar = new CoinTopBarController(this, new LocalCoinStore(requireContext()), userRepository);
         
         initializeViews(view);
+        coinTopBar.bind(view);
         setupAdapters();
         setupFilterChips();
         setupClickListeners();
@@ -86,15 +90,6 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
         taskCountText = view.findViewById(R.id.taskCountText);
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         fabAddTask = view.findViewById(R.id.fabAddTask);
-        coinScoreText = view.findViewById(R.id.coinScoreText);
-        
-        // Setup coin score card click listener for shop
-        View coinScoreCard = view.findViewById(R.id.coinScoreCard);
-        if (coinScoreCard != null) {
-            coinScoreCard.setOnClickListener(v -> {
-                startActivity(new android.content.Intent(requireContext(), com.student.overcooked.ui.ShopActivity.class));
-            });
-        }
     }
 
     private void setupAdapters() {
@@ -103,7 +98,19 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
                     // Open task detail dialog
                     showTaskDetailsDialog(task);
                 },
-                task -> taskRepository.toggleTaskCompletion(task.getId(), !task.isCompleted()),
+                task -> {
+                    android.util.Log.d("TasksFragment", "Toggle task called: " + task.getTitle() + ", current completed: " + task.isCompleted());
+                    // Optimistic UI update for snappy feedback
+                    boolean newCompleted = !task.isCompleted();
+                    TaskStatus newStatus = newCompleted ? TaskStatus.DONE : TaskStatus.NOT_STARTED;
+                    task.setCompleted(newCompleted);
+                    task.setCompletedAt(newCompleted ? new java.util.Date() : null);
+                    task.setStatus(newStatus);
+                    // Update the currently displayed list immediately
+                    applyFilter();
+                    // Persist change; coins are awarded in repository after confirmation
+                    taskRepository.updateTaskStatus(task.getId(), newStatus);
+                },
                 new TaskListAdapter.OnTaskMenuListener() {
                     @Override
                     public void onEditTask(Task task) {
@@ -165,12 +172,8 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
 
     @Override
     public void onTaskStatusChanged(Task task, TaskStatus newStatus) {
-        // Update task status and completion
-        task.setStatus(newStatus);
-        boolean isCompleted = (newStatus == TaskStatus.DONE);
-        task.setCompleted(isCompleted);
-        task.setCompletedAt(isCompleted ? new Date() : null);
-        taskRepository.updateTask(task);
+        // Use updateTaskStatus which properly awards coins
+        taskRepository.updateTaskStatus(task.getId(), newStatus);
         Toast.makeText(requireContext(), R.string.task_updated, Toast.LENGTH_SHORT).show();
     }
 
@@ -198,13 +201,6 @@ public class TasksFragment extends Fragment implements TaskDetailsDialog.OnTaskA
     }
 
     private void observeData() {
-        // Observe user data for coins
-        userRepository.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null && coinScoreText != null) {
-                coinScoreText.setText(String.valueOf(user.getCoins()));
-            }
-        });
-        
         taskRepository.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
             allTasks = tasks != null ? tasks : new ArrayList<>();
             applyFilter();

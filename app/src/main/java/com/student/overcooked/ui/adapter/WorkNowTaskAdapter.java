@@ -58,8 +58,8 @@ public class WorkNowTaskAdapter extends ListAdapter<Task, WorkNowTaskAdapter.Tas
             return Objects.equals(oldItem.getTitle(), newItem.getTitle()) &&
                    Objects.equals(oldItem.getDeadline(), newItem.getDeadline()) &&
                    oldItem.isCompleted() == newItem.isCompleted() &&
-                   oldItem.getPriority() == newItem.getPriority() &&
-                   oldItem.getStatus() == newItem.getStatus();
+                   Objects.equals(oldItem.getPriority(), newItem.getPriority()) &&
+                   Objects.equals(oldItem.getStatus(), newItem.getStatus());
         }
     };
 

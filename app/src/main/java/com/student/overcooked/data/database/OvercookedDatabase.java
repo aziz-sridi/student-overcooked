@@ -8,10 +8,12 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.student.overcooked.data.dao.GroupDao;
+import com.student.overcooked.data.dao.GroupTaskDao;
 import com.student.overcooked.data.dao.ProjectDao;
 import com.student.overcooked.data.dao.TaskDao;
 import com.student.overcooked.data.dao.TeamMemberDao;
 import com.student.overcooked.data.model.Group;
+import com.student.overcooked.data.model.GroupTask;
 import com.student.overcooked.data.model.Project;
 import com.student.overcooked.data.model.Task;
 import com.student.overcooked.data.model.TeamMember;
@@ -21,8 +23,8 @@ import com.student.overcooked.data.model.TeamMember;
  * Uses Room persistence library for local SQLite storage
  */
 @Database(
-        entities = {Task.class, Project.class, TeamMember.class, Group.class},
-        version = 6,
+    entities = {Task.class, Project.class, TeamMember.class, Group.class, GroupTask.class},
+    version = 9,
         exportSchema = false
 )
 @TypeConverters(Converters.class)
@@ -32,6 +34,7 @@ public abstract class OvercookedDatabase extends RoomDatabase {
     public abstract ProjectDao projectDao();
     public abstract TeamMemberDao teamMemberDao();
     public abstract GroupDao groupDao();
+    public abstract GroupTaskDao groupTaskDao();
 
     private static volatile OvercookedDatabase INSTANCE;
     private static final String DATABASE_NAME = "overcooked_database";

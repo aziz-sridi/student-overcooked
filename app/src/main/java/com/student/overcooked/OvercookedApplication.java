@@ -3,12 +3,15 @@ package com.student.overcooked;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.student.overcooked.data.database.OvercookedDatabase;
 import com.student.overcooked.data.repository.GroupRepository;
 import com.student.overcooked.data.repository.ProjectRepository;
 import com.student.overcooked.data.repository.TaskRepository;
 import com.student.overcooked.util.SessionManager;
 import com.student.overcooked.util.FirebaseDataMigration;
+import com.student.overcooked.util.UiModeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,6 +39,12 @@ public class OvercookedApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        // Apply persisted UI mode before Activities render.
+        boolean dark = UiModeSettings.isDarkModeEnabled(this);
+        AppCompatDelegate.setDefaultNightMode(dark
+            ? AppCompatDelegate.MODE_NIGHT_YES
+            : AppCompatDelegate.MODE_NIGHT_NO);
         
         // Configure Firebase Realtime Database
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -92,7 +101,7 @@ public class OvercookedApplication extends Application {
 
     public synchronized TaskRepository getTaskRepository() {
         if (taskRepository == null) {
-            taskRepository = new TaskRepository(getDatabase().taskDao());
+            taskRepository = new TaskRepository(getDatabase().taskDao(), getUserRepository());
         }
         return taskRepository;
     }
@@ -109,7 +118,7 @@ public class OvercookedApplication extends Application {
 
     public synchronized GroupRepository getGroupRepository() {
         if (groupRepository == null) {
-            groupRepository = new GroupRepository(getDatabase().groupDao());
+            groupRepository = new GroupRepository(getDatabase().groupDao(), getDatabase().groupTaskDao(), getUserRepository());
         }
         return groupRepository;
     }

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cream"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <!-- Top Bar (Pinned) -->
+    <include layout="@layout/layout_top_bar" />
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- Top Bar -->
-        <include layout="@layout/layout_top_bar" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,22 +80,30 @@
                     android:textColor="@color/textSecondary"
                     android:textSize="14sp" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditName"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Edit name" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Settings Section Title -->
+        <!-- Working Section Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/settings_title"
+            android:text="Working"
             android:textColor="@color/textSecondary"
             android:textSize="12sp"
             android:textAllCaps="true"
             android:letterSpacing="0.1" />
 
-        <!-- Settings Card -->
+        <!-- Working Card (Tasks + toggles/actions) -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,20 +116,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Cooked Meter Detail -->
                 <LinearLayout
-                    android:id="@+id/cookedMeterSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:background="?attr/selectableItemBackground">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_cooked_meter"
+                        android:src="@drawable/ic_dark_mode"
                         app:tint="@color/burntOrange" />
 
                     <TextView
@@ -128,32 +134,32 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
-                        android:text="@string/cooked_meter_detail"
+                        android:text="@string/dark_mode"
                         android:textColor="@color/textPrimary"
                         android:textSize="16sp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/textSecondary" />
+                    <Switch
+                        android:id="@+id/darkModeSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:thumbTint="@color/burntOrange"
+                        android:trackTint="@color/progressTrack" />
+
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="56dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@color/progressTrack" />
 
-                <!-- Notifications -->
                 <LinearLayout
-                    android:id="@+id/notificationsSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:background="?attr/selectableItemBackground">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -170,183 +176,22 @@
                         android:textColor="@color/textPrimary"
                         android:textSize="16sp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/textSecondary" />
+                    <Switch
+                        android:id="@+id/notificationsSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:thumbTint="@color/burntOrange"
+                        android:trackTint="@color/progressTrack" />
+
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="56dp"
-                    android:background="@color/progressTrack" />
-
-                <!-- Google Classroom -->
-                <LinearLayout
-                    android:id="@+id/googleClassroomSection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:background="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_classroom"
-                        app:tint="@color/burntOrange" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/google_classroom"
-                            android:textColor="@color/textPrimary"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/not_connected"
-                            android:textColor="@color/textSecondary"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/textSecondary" />
-                </LinearLayout>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Appearance Section Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/appearance_title"
-            android:textColor="@color/textSecondary"
-            android:textSize="12sp"
-            android:textAllCaps="true"
-            android:letterSpacing="0.1" />
-
-        <!-- Appearance Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            android:backgroundTint="@color/cardBackground">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_dark_mode"
-                    app:tint="@color/burntOrange" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="@string/dark_mode"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="16sp" />
-
-                <Switch
-                    android:id="@+id/darkModeSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:thumbTint="@color/burntOrange"
-                    android:trackTint="@color/progressTrack" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Account Section Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/account_title"
-            android:textColor="@color/textSecondary"
-            android:textSize="12sp"
-            android:textAllCaps="true"
-            android:letterSpacing="0.1" />
-
-        <!-- Account Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            android:backgroundTint="@color/cardBackground">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- About -->
-                <LinearLayout
-                    android:id="@+id/aboutSection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:background="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_info"
-                        app:tint="@color/burntOrange" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:text="@string/about"
-                        android:textColor="@color/textPrimary"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/textSecondary" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@color/progressTrack" />
 
-                <!-- Log Out -->
                 <LinearLayout
                     android:id="@+id/logoutSection"
                     android:layout_width="match_parent"
@@ -387,5 +232,6 @@
             android:textSize="12sp" />
 
         </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

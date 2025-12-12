@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,7 +36,7 @@ public class GroupMemberAdapter extends ListAdapter<GroupMember, GroupMemberAdap
         @Override
         public boolean areContentsTheSame(@NonNull GroupMember oldItem, @NonNull GroupMember newItem) {
             return Objects.equals(oldItem.getUserName(), newItem.getUserName()) &&
-                   oldItem.getRole() == newItem.getRole();
+                   Objects.equals(oldItem.getRole(), newItem.getRole());
         }
     };
 

@@ -50,7 +50,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskViewHolder> {
         public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
             return Objects.equals(oldItem.getTitle(), newItem.getTitle()) &&
                    oldItem.isCompleted() == newItem.isCompleted() &&
-                   oldItem.getStatus() == newItem.getStatus();
+                   Objects.equals(oldItem.getStatus(), newItem.getStatus());
         }
     };
 

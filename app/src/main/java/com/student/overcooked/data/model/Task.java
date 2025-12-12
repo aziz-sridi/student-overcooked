@@ -12,45 +12,42 @@ import java.util.Objects;
  * Represents a student task (homework, assignment, exam, etc.)
  */
 @Entity(tableName = "tasks")
-public class Task {
+public class Task extends BaseTask {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private String firestoreId; // UUID for Firestore compatibility
     private String userId; // Owner of the task for multi-user sync
-    private String title;
-    private String description;
     private String course;
     private TaskType taskType;
-    private Date deadline;
-    private boolean isCompleted;
     private Long projectId; // null means standalone task
-    private Priority priority;
-    private Date createdAt;
-    private Date completedAt;
     private String notes;
-    private TaskStatus status;
+
+    // Local-first sync fields (Room source-of-truth).
+    private boolean pendingSync;
+    private boolean pendingDelete;
+    private boolean lastSyncedExists;
+    private boolean lastSyncedCompleted;
 
     public Task() {
+        super();
         this.id = 0;
         this.firestoreId = null;
         this.userId = null;
-        this.title = "";
-        this.description = "";
         this.course = "";
         this.taskType = TaskType.HOMEWORK;
-        this.deadline = new Date();
-        this.isCompleted = false;
         this.projectId = null;
-        this.priority = Priority.MEDIUM;
-        this.createdAt = new Date();
-        this.completedAt = null;
         this.notes = "";
-        this.status = TaskStatus.NOT_STARTED;
+
+        this.pendingSync = false;
+        this.pendingDelete = false;
+        this.lastSyncedExists = false;
+        this.lastSyncedCompleted = false;
     }
 
     public Task(long id, String title, String description, String course, TaskType taskType,
                 Date deadline, boolean isCompleted, Long projectId, Priority priority,
                 Date createdAt, Date completedAt, String notes) {
+        super();
         this.id = id;
         this.title = title;
         this.description = description != null ? description : "";
@@ -64,11 +61,17 @@ public class Task {
         this.completedAt = completedAt;
         this.notes = notes != null ? notes : "";
         this.status = isCompleted ? TaskStatus.DONE : TaskStatus.NOT_STARTED;
+
+        this.pendingSync = false;
+        this.pendingDelete = false;
+        this.lastSyncedExists = true;
+        this.lastSyncedCompleted = isCompleted;
     }
 
     public Task(long id, String title, String description, String course, TaskType taskType,
                 Date deadline, boolean isCompleted, Long projectId, Priority priority,
                 Date createdAt, Date completedAt, String notes, TaskStatus status) {
+        super();
         this.id = id;
         this.title = title;
         this.description = description != null ? description : "";
@@ -82,6 +85,11 @@ public class Task {
         this.completedAt = completedAt;
         this.notes = notes != null ? notes : "";
         this.status = status != null ? status : TaskStatus.NOT_STARTED;
+
+        this.pendingSync = false;
+        this.pendingDelete = false;
+        this.lastSyncedExists = true;
+        this.lastSyncedCompleted = isCompleted;
     }
 
     // Getters and Setters
@@ -94,41 +102,29 @@ public class Task {
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
     public String getCourse() { return course; }
     public void setCourse(String course) { this.course = course; }
 
     public TaskType getTaskType() { return taskType; }
     public void setTaskType(TaskType taskType) { this.taskType = taskType; }
 
-    public Date getDeadline() { return deadline; }
-    public void setDeadline(Date deadline) { this.deadline = deadline; }
-
-    public boolean isCompleted() { return isCompleted; }
-    public void setCompleted(boolean completed) { isCompleted = completed; }
-
     public Long getProjectId() { return projectId; }
     public void setProjectId(Long projectId) { this.projectId = projectId; }
-
-    public Priority getPriority() { return priority; }
-    public void setPriority(Priority priority) { this.priority = priority; }
-
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-
-    public Date getCompletedAt() { return completedAt; }
-    public void setCompletedAt(Date completedAt) { this.completedAt = completedAt; }
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
 
-    public TaskStatus getStatus() { return status != null ? status : TaskStatus.NOT_STARTED; }
-    public void setStatus(TaskStatus status) { this.status = status; }
+    public boolean isPendingSync() { return pendingSync; }
+    public void setPendingSync(boolean pendingSync) { this.pendingSync = pendingSync; }
+
+    public boolean isPendingDelete() { return pendingDelete; }
+    public void setPendingDelete(boolean pendingDelete) { this.pendingDelete = pendingDelete; }
+
+    public boolean isLastSyncedExists() { return lastSyncedExists; }
+    public void setLastSyncedExists(boolean lastSyncedExists) { this.lastSyncedExists = lastSyncedExists; }
+
+    public boolean isLastSyncedCompleted() { return lastSyncedCompleted; }
+    public void setLastSyncedCompleted(boolean lastSyncedCompleted) { this.lastSyncedCompleted = lastSyncedCompleted; }
 
     /**
      * Check if the task is overdue

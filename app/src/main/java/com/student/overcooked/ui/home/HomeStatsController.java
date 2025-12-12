@@ -1,7 +1,5 @@
 package com.student.overcooked.ui.home;
 
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,7 +20,6 @@ public class HomeStatsController {
 
     private final Fragment fragment;
     private final QuickStatsAdapter quickStatsAdapter = new QuickStatsAdapter();
-    private final TextView coinScoreText;
 
     private int pendingCount;
     private int completedCount;
@@ -34,10 +31,8 @@ public class HomeStatsController {
     private int totalGroupTasks;
 
     public HomeStatsController(@NonNull Fragment fragment,
-                               @Nullable RecyclerView quickStatsRecycler,
-                               @Nullable TextView coinScoreText) {
+                               @Nullable RecyclerView quickStatsRecycler) {
         this.fragment = fragment;
-        this.coinScoreText = coinScoreText;
         if (quickStatsRecycler != null) {
             quickStatsRecycler.setLayoutManager(new LinearLayoutManager(fragment.requireContext(), LinearLayoutManager.HORIZONTAL, false));
             quickStatsRecycler.setAdapter(quickStatsAdapter);
@@ -52,7 +47,6 @@ public class HomeStatsController {
     public void setCompletedCount(int completedCount) {
         this.completedCount = completedCount;
         renderStats();
-        updateCoinScore();
     }
 
     public void setOverdueCount(int overdueCount) {
@@ -113,11 +107,4 @@ public class HomeStatsController {
         quickStatsAdapter.updateStats(statsList);
     }
 
-    private void updateCoinScore() {
-        if (coinScoreText == null || !fragment.isAdded()) {
-            return;
-        }
-        int coinScore = completedCount * 10;
-        coinScoreText.setText(String.valueOf(coinScore));
-    }
 }

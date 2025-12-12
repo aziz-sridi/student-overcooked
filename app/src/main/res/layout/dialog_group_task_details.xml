@@ -3,182 +3,224 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="0dp"
     app:cardCornerRadius="28dp"
-    app:cardElevation="8dp"
+    app:cardElevation="0dp"
     app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/cardBackground"
+        android:padding="24dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="20dp"
-            android:background="@color/cream">
+            android:layout_marginBottom="16dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/dialogTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/taskTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/taskMeta"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="13sp" />
-            </LinearLayout>
+                android:text="@string/task_details_title"
+                android:textSize="20sp"
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btnClose"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/close_button_desc"
                 android:src="@drawable/ic_close"
+                android:contentDescription="@string/close_button_desc"
                 app:tint="@color/textSecondary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/taskTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/textPrimary"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/descriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description_label"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/taskDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_add_person"
+                app:tint="@color/textSecondary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task_assignee_label"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/taskAssignee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/textPrimary" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="24dp"
-            android:paddingTop="16dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_time"
+                app:tint="@color/textSecondary"
+                android:layout_marginEnd="8dp" />
 
             <TextView
-                android:id="@+id/taskStatusChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:textColor="@color/textPrimary"
+                android:text="@string/deadline_label"
                 android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textColor="@color/textSecondary"
+                android:layout_marginEnd="8dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/taskDeadline"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/task_due_date_label"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/taskDeadline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/task_assignee_label"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/taskAssignee"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/priority_label"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/taskPriority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/descriptionLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/description_label"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/taskDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnToggleComplete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/group_task_mark_complete"
-                app:cornerRadius="16dp"
-                app:backgroundTint="@color/burntOrange" />
-
+                android:textSize="14sp"
+                android:textColor="@color/textPrimary" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_priority"
+                app:tint="@color/textSecondary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/priority_label"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/taskPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/mustardYellow"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/progressTrack"
+            android:layout_marginVertical="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/status_label"
+            android:textSize="14sp"
+            android:textColor="@color/textSecondary"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/statusChipGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            android:layout_marginBottom="24dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipNotStarted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_not_started"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                app:chipBackgroundColor="@color/chip_status_not_started_selector"
+                app:checkedIconEnabled="true"
+                app:checkedIcon="@drawable/ic_check" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipInProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_in_progress"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                app:chipBackgroundColor="@color/chip_status_in_progress_selector"
+                app:checkedIconEnabled="true"
+                app:checkedIcon="@drawable/ic_check" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_done"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                app:chipBackgroundColor="@color/chip_status_done_selector"
+                app:checkedIconEnabled="true"
+                app:checkedIcon="@drawable/ic_check" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_changes"
+            style="@style/Widget.MaterialComponents.Button"
+            app:backgroundTint="@color/burntOrange" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

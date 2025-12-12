@@ -56,6 +56,7 @@
 
             <!-- Task Type Selection -->
             <TextView
+                android:id="@+id/taskTypeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/task_type_label"
@@ -182,7 +183,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
+                    android:popupBackground="@color/cardBackground"
                     android:textColor="@color/textPrimary"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Assignee (used for group tasks; hidden for personal tasks) -->
+            <TextView
+                android:id="@+id/assigneeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task_assignee_label"
+                android:textColor="@color/textPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/assigneeInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:hint="@string/task_assignee_label"
+                android:visibility="gone"
+                app:boxBackgroundColor="@color/cream"
+                app:boxStrokeColor="@color/burntOrange"
+                app:hintTextColor="@color/burntOrange"
+                app:endIconMode="dropdown_menu"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/assigneeDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:popupBackground="@color/cardBackground"
+                    android:textColor="@color/textPrimary" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

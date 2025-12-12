@@ -3,6 +3,8 @@ package com.student.overcooked.data.model;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.firestore.Exclude;
+
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,40 +13,40 @@ import java.util.UUID;
  * Group task - tasks specific to a group
  */
 @Entity(tableName = "group_tasks")
-public class GroupTask {
+public class GroupTask extends BaseTask {
     @PrimaryKey
     @androidx.annotation.NonNull
     private String id;
     private String groupId;
-    private String title;
-    private String description;
     private String assigneeId;
     private String assigneeName;
-    private Priority priority;
-    private Date deadline;
-    private boolean isCompleted;
-    private Date completedAt;
     private String createdBy;
-    private Date createdAt;
+
+    // Local-first sync fields (Room source-of-truth). Excluded from Firestore.
+    private boolean pendingSync;
+    private boolean pendingDelete;
+    private boolean lastSyncedExists;
+    private boolean lastSyncedCompleted;
 
     public GroupTask() {
+        super();
         this.id = UUID.randomUUID().toString();
         this.groupId = "";
-        this.title = "";
-        this.description = "";
         this.assigneeId = null;
         this.assigneeName = null;
-        this.priority = Priority.MEDIUM;
-        this.deadline = new Date();
-        this.isCompleted = false;
-        this.completedAt = null;
         this.createdBy = "";
-        this.createdAt = new Date();
+        this.status = TaskStatus.NOT_STARTED;
+
+        this.pendingSync = false;
+        this.pendingDelete = false;
+        this.lastSyncedExists = false;
+        this.lastSyncedCompleted = false;
     }
 
     public GroupTask(@androidx.annotation.NonNull String id, String groupId, String title, String description,
                      String assigneeId, String assigneeName, Priority priority, Date deadline, boolean isCompleted,
                      Date completedAt, String createdBy, Date createdAt) {
+        super();
         this.id = id;
         this.groupId = groupId;
         this.title = title;
@@ -57,6 +59,12 @@ public class GroupTask {
         this.completedAt = completedAt;
         this.createdBy = createdBy;
         this.createdAt = createdAt != null ? createdAt : new Date();
+        this.status = isCompleted ? TaskStatus.DONE : TaskStatus.NOT_STARTED;
+
+        this.pendingSync = false;
+        this.pendingDelete = false;
+        this.lastSyncedExists = true;
+        this.lastSyncedCompleted = isCompleted;
     }
 
     // Getters and Setters
@@ -67,39 +75,39 @@ public class GroupTask {
     public String getGroupId() { return groupId; }
     public void setGroupId(String groupId) { this.groupId = groupId; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
     public String getAssigneeId() { return assigneeId; }
     public void setAssigneeId(String assigneeId) { this.assigneeId = assigneeId; }
 
     public String getAssigneeName() { return assigneeName; }
     public void setAssigneeName(String assigneeName) { this.assigneeName = assigneeName; }
 
-    public Priority getPriority() { return priority; }
-    public void setPriority(Priority priority) { this.priority = priority; }
-
     // Alias for adapter compatibility
     public String getAssignedToName() { return assigneeName; }
     public void setAssignedToName(String name) { /* Firestore compatibility - maps to assigneeName */ }
 
-    public Date getDeadline() { return deadline; }
-    public void setDeadline(Date deadline) { this.deadline = deadline; }
-
-    public boolean isCompleted() { return isCompleted; }
-    public void setCompleted(boolean completed) { isCompleted = completed; }
-
-    public Date getCompletedAt() { return completedAt; }
-    public void setCompletedAt(Date completedAt) { this.completedAt = completedAt; }
-
     public String getCreatedBy() { return createdBy; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    @Exclude
+    public boolean isPendingSync() { return pendingSync; }
+
+    public void setPendingSync(boolean pendingSync) { this.pendingSync = pendingSync; }
+
+    @Exclude
+    public boolean isPendingDelete() { return pendingDelete; }
+
+    public void setPendingDelete(boolean pendingDelete) { this.pendingDelete = pendingDelete; }
+
+    @Exclude
+    public boolean isLastSyncedExists() { return lastSyncedExists; }
+
+    public void setLastSyncedExists(boolean lastSyncedExists) { this.lastSyncedExists = lastSyncedExists; }
+
+    @Exclude
+    public boolean isLastSyncedCompleted() { return lastSyncedCompleted; }
+
+    public void setLastSyncedCompleted(boolean lastSyncedCompleted) { this.lastSyncedCompleted = lastSyncedCompleted; }
+
 
     public boolean isOverdue() {
         return !isCompleted && deadline != null && deadline.before(new Date());
@@ -121,12 +129,13 @@ public class GroupTask {
                 Objects.equals(deadline, groupTask.deadline) &&
                 Objects.equals(completedAt, groupTask.completedAt) &&
                 Objects.equals(createdBy, groupTask.createdBy) &&
-                Objects.equals(createdAt, groupTask.createdAt);
+            Objects.equals(createdAt, groupTask.createdAt) &&
+            status == groupTask.status;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, groupId, title, description, assigneeId, assigneeName,
-                deadline, isCompleted, completedAt, createdBy, createdAt);
+            deadline, isCompleted, completedAt, createdBy, createdAt, status);
     }
 }

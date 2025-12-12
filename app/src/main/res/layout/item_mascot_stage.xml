@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cream">
+
+    <ImageView
+        android:id="@+id/stageImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Mascot stage"
+        android:scaleType="centerInside"
+        android:padding="32dp" />
+
+    <TextView
+        android:id="@+id/stageName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/cardBackground"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Stage"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</FrameLayout>

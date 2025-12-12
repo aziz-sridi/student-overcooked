@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.student.overcooked.R;
+import com.student.overcooked.data.MascotPackStore;
 import com.student.overcooked.data.model.Task;
 import com.student.overcooked.util.CookedMeterCalculator;
 import com.student.overcooked.util.CookedMeterResult;
@@ -96,16 +97,7 @@ public class CookedMeterController {
     }
 
     private int getLevelIcon(@NonNull CookedMeterResult result) {
-        switch (result.getLevel()) {
-            case COZY:
-                return R.drawable.mascot_cozy;
-            case CRISPY:
-                return R.drawable.mascot_crispy;
-            case COOKED:
-                return R.drawable.mascot_cooked;
-            case OVERCOOKED:
-            default:
-                return R.drawable.mascot_overcooked;
-        }
+        String selectedPackId = new MascotPackStore(fragment.requireContext()).getSelectedPackId();
+        return MascotPackStore.getDrawableForLevel(selectedPackId, result.getLevel());
     }
 }

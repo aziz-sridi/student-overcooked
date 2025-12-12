@@ -22,41 +22,60 @@ public interface TaskDao {
 
     // ================= Query Operations =================
 
-    @Query("SELECT * FROM tasks ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 ORDER BY deadline ASC")
     LiveData<List<Task>> getAllTasks();
 
-    @Query("SELECT * FROM tasks WHERE isCompleted = 0 ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND isCompleted = 0 ORDER BY deadline ASC")
     LiveData<List<Task>> getPendingTasks();
 
-    @Query("SELECT * FROM tasks WHERE isCompleted = 1 ORDER BY completedAt DESC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND isCompleted = 1 ORDER BY completedAt DESC")
     LiveData<List<Task>> getCompletedTasks();
 
-    @Query("SELECT * FROM tasks WHERE projectId IS NULL ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND projectId IS NULL ORDER BY deadline ASC")
     LiveData<List<Task>> getStandaloneTasks();
 
-    @Query("SELECT * FROM tasks WHERE projectId = :projectId ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND projectId = :projectId ORDER BY deadline ASC")
     LiveData<List<Task>> getTasksByProject(long projectId);
 
     @Query("SELECT * FROM tasks WHERE id = :taskId")
     Task getTaskById(long taskId);
 
-    @Query("SELECT * FROM tasks WHERE deadline < :now AND isCompleted = 0 ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND deadline < :now AND isCompleted = 0 ORDER BY deadline ASC")
     LiveData<List<Task>> getOverdueTasks(Date now);
 
-    @Query("SELECT * FROM tasks WHERE deadline BETWEEN :start AND :end AND isCompleted = 0 ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND deadline BETWEEN :start AND :end AND isCompleted = 0 ORDER BY deadline ASC")
     LiveData<List<Task>> getTasksDueBetween(Date start, Date end);
 
-    @Query("SELECT * FROM tasks WHERE course = :course ORDER BY deadline ASC")
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND deadline BETWEEN :start AND :end AND isCompleted = 0 ORDER BY deadline ASC")
+    List<Task> getTasksDueBetweenSync(Date start, Date end);
+
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 AND course = :course ORDER BY deadline ASC")
     LiveData<List<Task>> getTasksByCourse(String course);
 
-    @Query("SELECT COUNT(*) FROM tasks WHERE isCompleted = 0")
+    @Query("SELECT COUNT(*) FROM tasks WHERE pendingDelete = 0 AND isCompleted = 0")
     LiveData<Integer> getPendingTaskCount();
 
-    @Query("SELECT COUNT(*) FROM tasks WHERE isCompleted = 1")
+    @Query("SELECT COUNT(*) FROM tasks WHERE pendingDelete = 0 AND isCompleted = 1")
     LiveData<Integer> getCompletedTaskCount();
 
-    @Query("SELECT COUNT(*) FROM tasks WHERE deadline < :now AND isCompleted = 0")
+    @Query("SELECT COUNT(*) FROM tasks WHERE pendingDelete = 0 AND deadline < :now AND isCompleted = 0")
     LiveData<Integer> getOverdueTaskCount(Date now);
+
+    // Synchronous query for sync operations
+    @Query("SELECT * FROM tasks WHERE pendingDelete = 0 ORDER BY deadline ASC")
+    List<Task> getAllTasksSync();
+
+    @Query("SELECT * FROM tasks ORDER BY deadline ASC")
+    List<Task> getAllTasksIncludingDeletedSync();
+
+    @Query("SELECT * FROM tasks WHERE firestoreId = :firestoreId LIMIT 1")
+    Task getTaskByFirestoreIdSync(String firestoreId);
+
+    @Query("SELECT * FROM tasks WHERE pendingSync = 1")
+    List<Task> getPendingSyncTasksSync();
+
+    @Query("SELECT * FROM tasks WHERE firestoreId IS NULL OR firestoreId = ''")
+    List<Task> getTasksMissingFirestoreIdSync();
 
     // ================= Insert/Update/Delete Operations =================
 

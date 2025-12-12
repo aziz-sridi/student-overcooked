@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base application theme -->
-    <style name="Theme.Overcooked" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.Overcooked" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/burntOrange</item>
         <item name="colorPrimaryVariant">@color/cookedGradientEnd</item>
@@ -25,11 +25,6 @@
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/cream</item>
         <item name="android:windowLightStatusBar">true</item>
-    </style>
-
-    <!-- Theme for splash screen -->
-    <style name="Theme.Overcooked.Splash" parent="Theme.Overcooked">
-        <item name="android:windowBackground">@color/cream</item>
     </style>
 
 </resources>

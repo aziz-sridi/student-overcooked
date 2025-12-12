@@ -19,7 +19,7 @@
     <string name="confirm_password_hint">Re-enter your password</string>
     <!-- Home Activity Strings -->
     <string name="cooked_meter_desc">Cooked meter showing stress level</string>
-    <string name="cooked_placeholder">You\'re 65% cooked 🔥</string>
+    <string name="cooked_placeholder">You\'re 65%% cooked 🔥</string>
     <string name="stress_level_indicator">Stress level indicator</string>
 
     <!-- Section Titles -->

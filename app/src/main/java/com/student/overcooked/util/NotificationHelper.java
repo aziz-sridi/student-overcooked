@@ -1,5 +1,6 @@
 package com.student.overcooked.util;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,8 +21,10 @@ import com.student.overcooked.ui.MainNavActivity;
 public class NotificationHelper {
 
     private static final String CHANNEL_ID_MESSAGES = "group_messages";
+    private static final String CHANNEL_ID_GROUP_TASKS = "group_tasks";
     private static final String CHANNEL_ID_DEADLINES = "task_deadlines";
     private static final String CHANNEL_NAME_MESSAGES = "Group Messages";
+    private static final String CHANNEL_NAME_GROUP_TASKS = "Group Tasks";
     private static final String CHANNEL_NAME_DEADLINES = "Task Deadlines";
 
     private final Context context;
@@ -46,6 +49,15 @@ public class NotificationHelper {
                 messagesChannel.setDescription("Notifications for new group messages");
                 manager.createNotificationChannel(messagesChannel);
 
+            // Group tasks channel
+            NotificationChannel groupTasksChannel = new NotificationChannel(
+                CHANNEL_ID_GROUP_TASKS,
+                CHANNEL_NAME_GROUP_TASKS,
+                NotificationManager.IMPORTANCE_DEFAULT
+            );
+            groupTasksChannel.setDescription("Notifications for new group tasks");
+            manager.createNotificationChannel(groupTasksChannel);
+
                 // Deadlines channel
                 NotificationChannel deadlinesChannel = new NotificationChannel(
                         CHANNEL_ID_DEADLINES,
@@ -61,6 +73,7 @@ public class NotificationHelper {
     /**
      * Show a notification for a new group message
      */
+    @SuppressLint("MissingPermission")
     public void showMessageNotification(String groupId, String groupName, String senderName, String message) {
         if (!hasNotificationPermission()) {
             return;
@@ -92,8 +105,42 @@ public class NotificationHelper {
     }
 
     /**
+     * Show a notification for a newly created group task
+     */
+    @SuppressLint("MissingPermission")
+    public void showGroupTaskNotification(String groupId, String groupName, String taskTitle) {
+        if (!hasNotificationPermission()) {
+            return;
+        }
+
+        Intent intent = new Intent(context, MainNavActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("group_id", groupId);
+        intent.putExtra("navigate_to", "groups");
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                (groupId + "_task").hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID_GROUP_TASKS)
+                .setSmallIcon(R.drawable.ic_add_task)
+                .setContentTitle(groupName)
+                .setContentText("New task: " + taskTitle)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("New task: " + taskTitle))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        notificationManager.notify((groupId + "_task").hashCode(), builder.build());
+    }
+
+    /**
      * Show a notification for an approaching deadline
      */
+    @SuppressLint("MissingPermission")
     public void showDeadlineNotification(String taskId, String taskTitle, String projectName, long hoursRemaining) {
         if (!hasNotificationPermission()) {
             return;

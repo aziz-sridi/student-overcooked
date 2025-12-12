@@ -4,6 +4,15 @@
         android:id="@+id/action_view"
         android:title="@string/action_view_details" />
     <item
+        android:id="@+id/action_set_not_started"
+        android:title="@string/status_not_started" />
+    <item
+        android:id="@+id/action_set_in_progress"
+        android:title="@string/status_in_progress" />
+    <item
+        android:id="@+id/action_set_done"
+        android:title="@string/status_done" />
+    <item
         android:id="@+id/action_toggle_complete"
         android:title="@string/group_task_mark_complete" />
     <item

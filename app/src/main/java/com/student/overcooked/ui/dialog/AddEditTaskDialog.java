@@ -97,8 +97,7 @@ public class AddEditTaskDialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, com.google.android.material.R.style.Theme_MaterialComponents_Light_Dialog);
-
+        // Use the activity's DayNight theme (don't force a Light dialog theme).
         formState = AddEditTaskFormState.fromArguments(getArguments());
     }
 
@@ -134,9 +133,10 @@ public class AddEditTaskDialog extends DialogFragment {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
+            R.layout.dropdown_menu_item,
                 courses
         );
+        adapter.setDropDownViewResource(R.layout.dropdown_menu_item);
         viewBinder.taskCourseInput.setAdapter(adapter);
     }
 

@@ -20,11 +20,13 @@ import com.student.overcooked.data.model.Group;
 import com.student.overcooked.data.model.ProjectInvitation;
 import com.student.overcooked.data.repository.GroupRepository;
 import com.student.overcooked.data.repository.UserRepository;
+import com.student.overcooked.data.LocalCoinStore;
 import com.student.overcooked.ui.GroupDetailActivity;
 import com.student.overcooked.ui.adapter.GroupListAdapter;
 import com.student.overcooked.ui.adapter.ProjectInvitationAdapter;
 import com.student.overcooked.ui.groups.GroupCreateController;
 import com.student.overcooked.ui.groups.GroupJoinController;
+import com.student.overcooked.ui.common.CoinTopBarController;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -43,7 +45,6 @@ public class GroupsFragment extends Fragment implements ProjectInvitationAdapter
     private TextView groupCountText;
     private com.google.android.material.button.MaterialButton btnCreateGroup;
     private com.google.android.material.button.MaterialButton btnJoinGroup;
-    private TextView coinScoreText;
 
     private GroupListAdapter groupAdapter;
     private ProjectInvitationAdapter invitationAdapter;
@@ -52,6 +53,7 @@ public class GroupsFragment extends Fragment implements ProjectInvitationAdapter
     private UserRepository userRepository;
     private GroupCreateController groupCreateController;
     private GroupJoinController groupJoinController;
+    private CoinTopBarController coinTopBar;
 
     @Nullable
     @Override
@@ -65,10 +67,12 @@ public class GroupsFragment extends Fragment implements ProjectInvitationAdapter
         
         groupRepository = ((OvercookedApplication) requireActivity().getApplication()).getGroupRepository();
         userRepository = ((OvercookedApplication) requireActivity().getApplication()).getUserRepository();
+        coinTopBar = new CoinTopBarController(this, new LocalCoinStore(requireContext()), userRepository);
         groupCreateController = new GroupCreateController(this, groupRepository, this::openGroupDetail);
         groupJoinController = new GroupJoinController(this, groupRepository, this::openGroupDetail);
         
         initializeViews(view);
+        coinTopBar.bind(view);
         setupAdapters();
         setupClickListeners();
         observeData();
@@ -83,15 +87,6 @@ public class GroupsFragment extends Fragment implements ProjectInvitationAdapter
         groupCountText = view.findViewById(R.id.groupCountText);
         btnCreateGroup = view.findViewById(R.id.btnCreateGroup);
         btnJoinGroup = view.findViewById(R.id.btnJoinGroup);
-        coinScoreText = view.findViewById(R.id.coinScoreText);
-        
-        // Setup coin score card click listener for shop
-        View coinScoreCard = view.findViewById(R.id.coinScoreCard);
-        if (coinScoreCard != null) {
-            coinScoreCard.setOnClickListener(v -> {
-                startActivity(new android.content.Intent(requireContext(), com.student.overcooked.ui.ShopActivity.class));
-            });
-        }
     }
 
     private void setupAdapters() {
@@ -128,13 +123,6 @@ public class GroupsFragment extends Fragment implements ProjectInvitationAdapter
     }
 
     private void observeData() {
-        // Observe user data for coins
-        userRepository.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null && coinScoreText != null) {
-                coinScoreText.setText(String.valueOf(user.getCoins()));
-            }
-        });
-        
         groupRepository.getUserGroups().observe(getViewLifecycleOwner(), this::updateGroupsList);
         
         // Observe pending invitations

@@ -3,11 +3,13 @@ package com.student.overcooked.data.repository;
 import androidx.lifecycle.LiveData;
 
 import com.student.overcooked.data.dao.GroupDao;
+import com.student.overcooked.data.dao.GroupTaskDao;
 import com.student.overcooked.data.model.Group;
 import com.student.overcooked.data.model.GroupMember;
 import com.student.overcooked.data.model.GroupMessage;
 import com.student.overcooked.data.model.GroupTask;
 import com.student.overcooked.data.model.Priority;
+import com.student.overcooked.data.model.TaskStatus;
 import com.student.overcooked.data.model.ProjectInvitation;
 import com.student.overcooked.data.model.ProjectResource;
 import com.student.overcooked.data.model.ProjectResourceType;
@@ -17,6 +19,7 @@ import com.student.overcooked.data.repository.group.GroupMemberDataSource;
 import com.student.overcooked.data.repository.group.GroupMessageDataSource;
 import com.student.overcooked.data.repository.group.GroupResourceDataSource;
 import com.student.overcooked.data.repository.group.GroupTasksDataSource;
+import com.student.overcooked.data.repository.UserRepository;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,13 +56,15 @@ public class GroupRepository {
     private final GroupMessageDataSource groupMessageDataSource;
     private final GroupMemberDataSource groupMemberDataSource;
     private final GroupInvitationDataSource groupInvitationDataSource;
+    private final UserRepository userRepository;
 
-    public GroupRepository(GroupDao groupDao) {
+    public GroupRepository(GroupDao groupDao, GroupTaskDao groupTaskDao, UserRepository userRepository) {
         this.firestore = FirebaseFirestore.getInstance();
         this.auth = FirebaseAuth.getInstance();
         this.executorService = Executors.newSingleThreadExecutor();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         this.storageRoot = storage.getReference();
+        this.userRepository = userRepository;
 
         this.groupsCollection = firestore.collection("groups");
         this.membersCollection = firestore.collection("group_members");
@@ -84,7 +89,11 @@ public class GroupRepository {
                 auth,
                 groupsCollection,
                 groupTasksCollection,
-                groupInfoDataSource::getGroup
+                groupInfoDataSource::getGroup,
+                userRepository,
+                groupTaskDao,
+                executorService,
+                com.student.overcooked.OvercookedApplication.getInstance()
         );
         this.groupResourceDataSource = new GroupResourceDataSource(auth, storageRoot, resourcesCollection);
         this.groupMessageDataSource = new GroupMessageDataSource(auth, messagesCollection, usersCollection);
@@ -162,6 +171,10 @@ public class GroupRepository {
 
     public void toggleGroupTaskCompletion(GroupTask task, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         groupTasksDataSource.toggleGroupTaskCompletion(task, onSuccess, onFailure);
+    }
+
+    public void updateGroupTaskStatus(GroupTask task, TaskStatus status, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        groupTasksDataSource.updateGroupTaskStatus(task, status, onSuccess, onFailure);
     }
 
     public LiveData<List<GroupMessage>> getGroupMessages(String groupId) {
